@@ -1,0 +1,34 @@
+{% extends "body.html" %}
+
+{% block content %}
+<section class="empty small-form-container">
+    <p class="empty-title h1">Sign in</p>
+    <div class="empty-action">
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <label class="form-label">
+            If you don't have an account, please <a href="{{ url_for('register') }}">register.</a>
+        </label>
+        <div class="form-group">
+        {{ form.username.label(class_='form-label') }}
+        {{ form.username(size=32, class_='form-input') }}
+        </div>
+        <div class="form-group">
+        {{ form.password.label(class_='form-label') }}
+        {{ form.password(size=32, class_='form-input') }}
+        </div>
+        <label class="form-label">
+            If you forgot your password, click <a href="{{ url_for('forgot_password') }}">here</a>
+        </label>
+        <div class="form-group">
+            <label class="form-checkbox form-inline">
+                {{ form.remember_me() }}
+                <i class="form-icon"></i> {{ form.remember_me.label.text }}
+            </label>
+            {# {{ form.forgot(class_='btn form-inline') }} #}
+            {{ form.submit(class_='btn btn-primary form-inline') }}
+        </div>
+    </form>
+    </div>
+</section>
+{% endblock %}

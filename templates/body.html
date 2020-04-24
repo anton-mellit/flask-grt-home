@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>{{ config.site.title }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="{{ config.site.description }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='spectre.min.css') }}"/>
+        <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome.min.css') }}"/>
+        <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}"/>
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}"/>
+        <script src="{{ url_for('static', filename='jquery-3.5.0.min.js') }}"></script>
+    </head>
+    <body>
+        <div class="hide-sm">
+            <header class="navbar">
+            <section class="navbar-section">
+                <a href="{{ url_for('index') }}" class="navbar-brand">
+                    {{ config.site.title }}
+                </a>
+            </section>
+            <section class="navbar-section">
+                {% for key, item in config.menu.items() %}
+                {% set active = '' %}
+                {% if page.menu_item==key %}
+                    {% set active = 'active' %}
+                {% endif %}
+                <a href="{{ url_for(key) }}" class="btn btn-link {{ active }}">
+                    {{ item }}
+                </a>
+                {% endfor %}
+            </section>
+            <section class="navbar-section">
+                {% if current_user.is_authenticated %}
+                    <img src="{{ current_user.avatar(24) }}" class="img-responsive"/>
+                <a href="/profile" class="btn btn-link">
+                    {{ current_user.data.fullname }}</a>
+                <a href="/logout" class="btn btn-link">Sign out</a>
+                {% else %}
+                <a href="/login" class="btn btn-link">Sign in</a>
+                {% endif %}
+            </section>
+        </header>
+        </div>
+        <div class="show-sm">
+        <header class="navbar">
+            <section class="navbar-section">
+                <a href="{{ url_for('index') }}" class="navbar-brand">
+                    {{ config.site.title }}
+                </a>
+            </section>
+            <section class="navbar-section">
+                <a href="javascript:document.getElementById('mobile-menu-container').classList.add('open');">
+                <i class="fa fa-2x fa-bars"></i>
+                </a>
+            </section>
+        </header>
+        </div>
+        <div class="overlay" id="mobile-menu-container">
+            <header class="mobile-menu">
+            <a href="{{ url_for('index') }}" class="nav-brand">
+                {{ config.site.title }}
+            </a>
+            
+            <a href="javascript:document.getElementById('mobile-menu-container').classList.remove('open');" class="mobile-menu-close">
+                <i class="fa fa-2x fa-close"></i>
+            </a>
+
+            <ul class="nav">
+            {% for key, item in config.menu.items() %}
+            {% set active = '' %}
+            {% if page.menu_item==key %}
+                {% set active = 'active' %}
+            {% endif %}
+            <li class="nav-item">
+            <a href="{{ url_for(key) }}" class="btn btn-link {{ active }}">
+                {{ item }}
+            </a>
+            </li>
+            {% endfor %}
+            </ul>
+            <section class="mobile-menu-profile">
+                {% if current_user.is_authenticated %}
+                    <img src="{{ current_user.avatar(24) }}" />
+                <a href="/profile" class="btn btn-link">
+                    {{ current_user.data.fullname }}</a>
+                </li>
+                <a href="/logout" class="btn btn-link">Sign out</a>
+                {% else %}
+                <a href="/login" class="btn btn-link">Sign in</a>
+                {% endif %}
+            </section>
+            </header>
+        </div>
+        <main>
+            {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+            <section class="section">
+                {% for category, message in messages %}
+                <div class="toast toast-{{ category }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
+            {% endwith %}
+            <section class="section">
+                {% block content %}
+                {% endblock %}
+            </section>
+        </main>
+    </body>
+</html>
+

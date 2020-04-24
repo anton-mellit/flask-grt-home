@@ -1,0 +1,33 @@
+<select {{ args | safe }}>
+    {% if placeholder %}
+        <option value="" disabled selected>{{ placeholder }}</option>
+    {% endif %}
+
+    {% for optgroup0 in timezones %}
+    {% for optgroup, options in optgroup0.items() %}
+    <optgroup label="{{ optgroup }}">
+        {% for key, value in options.items() %}
+            <option value="{{ key }}"
+                    {% if key==field.data %}
+                        selected="true"
+                    {% endif %} >{{ value }}
+            </option>
+        {% endfor %}
+    </optgroup>
+    {% endfor %}
+    {% endfor %}
+</select>
+
+{% if not field.data %}
+<script>
+$( document ).ready(function() {
+    var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    var selector = "select[name='{{ field.name }}'] > optgroup > option[value='" + tz + "']";
+    var option = $( selector );
+    if (option.length) {
+        $( "select[name='{{ field.name }}']" ).val(option.val());
+    }
+});
+</script>
+{% endif %}
+

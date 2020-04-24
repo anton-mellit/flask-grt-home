@@ -1,0 +1,28 @@
+{% extends "body.html" %}
+
+{% block content %}
+<section class="empty small-form-container">
+    <p class="empty-title h1">{{ form.title }}</p>
+    <div class="empty-action">
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        {% for field in form %}
+            {% if field.type in ('StringField', 'PasswordField') %}
+                <div class="form-group">
+                    {{ field.label(class_='form-label') }}
+                    {{ field(class_='form-input') }}
+                </div>
+            {% elif field.type=='SubmitField' %}
+                <div class="form-group">
+                    {{ field(class_='btn btn-primary') }}
+                </div>
+            {% elif field.type=='RecaptchaField' %}
+                <div class="form-group">
+                    {{ field() }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </form>
+    </div>
+</section>
+{% endblock %}

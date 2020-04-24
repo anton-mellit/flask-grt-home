@@ -1,0 +1,46 @@
+{% extends "body.html" %}
+
+{% block content %}
+<section class="medium-form-container">
+    <h1>Registration</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+        {{ form.fullname.label(class_='form-label') }}
+        {{ form.fullname(class_='form-input') }}
+        </div>
+        <div class="form-group">
+        {{ form.username.label(class_='form-label') }}
+        {{ form.username(class_='form-input') }}
+        </div>
+        <div class="form-group">
+        {{ form.email.label(class_='form-label') }}
+        {{ form.email(class_='form-input') }}
+        </div>
+        <div class="form-group">
+        {{ form.timezone.label(class_='form-label') }}
+        {{ form.timezone(class_='form-select', placeholder='Select timezone') }}
+        </div>
+        <div class="form-group">
+            <label class="form-checkbox form-inline">
+                {{ form.digest_allowed() }}
+                <i class="form-icon"></i> {{ form.digest_allowed.label.text }}
+            </label>
+        </div>
+        <div class="form-group">
+            <label class="form-checkbox form-inline">
+                {{ form.agree_terms() }}
+                <i class="form-icon"></i> {{ form.agree_terms.label.text }}
+            </label>
+        </div>
+        <div class="form-group">
+            {{ form.password.label(class_='form-label') }}
+            {{ form.password(size=32, class_='form-input') }}
+        </div>
+        <div class="form-group">
+            {{ form.recaptcha() }}
+        </div>
+        {{ form.submit(class_='btn btn-primary') }}
+    </form>
+</section>
+{% endblock %}

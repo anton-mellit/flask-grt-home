@@ -1,0 +1,120 @@
+/*
+===============================================================================================================================
+Put your custom CSS in this file.
+===============================================================================================================================
+*/
+
+/* Load of Font Awesome for use by Presentation Plugin */
+@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css');
+
+/* CSS to style Presentation Plugin slides */
+.reveal .slides {
+    text-align: left;
+}
+
+/*.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+    text-transform: unset !important;
+}*/
+
+.form_field_inline {
+    display: inline-block;
+    vertical-align: top;
+    padding: 2px;
+}
+
+.table-row-clickable{
+    cursor:pointer;
+}
+
+.navbar .navbar-brand {
+    text-transform: uppercase;
+    font-size: 1.5em;
+    font-weight: 400;
+}
+
+.mobile-menu .nav-brand {
+    text-transform: uppercase;
+    font-size: 1.5em;
+    font-weight: 400;
+}
+
+.navbar {
+    height: 3em;
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    width: 100%;
+    padding-left: 1em;
+    padding-right: 1em;
+    border-bottom: 1px solid rgba(128, 128, 192, 0.2);
+    background: white;
+    overflow: hidden;
+    max-width: 64em;
+}
+
+main {
+    padding-top: 3em;
+    padding-left: 1em;
+    padding-right: 1em;
+    max-width: 64em;
+}
+
+section.section {
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.small-form-container {
+    max-width: 32em;
+    border: 4px solid #eee;
+    border-radius: 4px;
+    padding: 1em 3em 3em 3em;
+    text-align: center;
+    margin: 4em auto;
+}
+
+.medium-form-container {
+    max-width: 32em;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: black;
+    z-index: 10;
+    visibility: hidden;
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: opacity .35s, visibility .35s, height .35s;
+}
+
+.overlay.open {
+    visibility: visible;
+    height: 100%;
+    opacity: 0.95;
+}
+
+.mobile-menu {
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: .5em;
+    padding-bottom: 1em;
+}
+
+.mobile-menu-profile {
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.mobile-menu-profile img {
+    vertical-align: middle;
+}
+
+.mobile-menu-close {
+    float: right;
+    vertical-align: top;
+}
+
