@@ -13,6 +13,10 @@ with (BASE_PATH / 'config.yaml').open() as f:
     for key, value in config['flask'].items():
         app.config[key] = value
 
+@app.context_processor
+def inject_site():
+    return { 'site': config['site'] }
+
 from flask_login import LoginManager
 login_manager = LoginManager(app)
 
@@ -31,18 +35,18 @@ from flaskext.markdown import Markdown
 markdown = Markdown(app)
 
 import users
+import pages
 
 @app.route('/news')
 def news():
-    page = { 'menu_item': 'news' }
-    return render_template('body.html', config=config, page=page)
+    return render_template('body.html')
 
 app.add_url_rule('/', 'index', news)
 
+@app.route('/events/<past_or_future>')
 @app.route('/events')
-def events():
-    page = { 'menu_item': 'events' }
-    return render_template('body.html', config=config, page=page)
+def events(past_or_future='future'):
+    return render_template('body.html')
 
 @app.route('/favicon.ico')
 def favicon():

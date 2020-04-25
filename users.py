@@ -201,7 +201,6 @@ def login():
     if current_user.is_authenticated:
         flash('You are already signed in', 'default')
         return redirect(url_for('index'))
-    page = { 'menu_item': 'login' }
     form = LoginForm()
     if form.validate_on_submit():
         user = load_user(form.username.data)
@@ -217,7 +216,7 @@ def login():
         else:
             flash('The username or password is incorrect.', 'error')
             return redirect(url_for('login'))
-    return render_template('login.html', config=config, page=page, form=form)
+    return render_template('login.html', form=form)
 
 @app.route('/logout')
 def logout():
@@ -228,7 +227,6 @@ def logout():
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    page = { 'menu_item': 'profile' }
     if request.method=='GET':
         form = ProfileForm(data=current_user.data)
     else:
@@ -259,14 +257,13 @@ def profile():
                 return redirect(url_for('profile'))
     form.username.data = current_user.get_id()
     flash_errors(form)
-    return render_template('profile.html', config=config, page=page, form=form)
+    return render_template('profile.html', form=form)
     
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         flash('You are already signed in', 'default')
         return redirect(url_for('index'))
-    page = { 'menu_item': 'profile' }
     form = RegisterForm()
     if form.validate_on_submit():
         if load_user(form.username.data):
@@ -292,11 +289,10 @@ def register():
                     spam folder.' % (user.data['email'],), 'success')
             return redirect(url_for('index'))
     flash_errors(form)
-    return render_template('register.html', config=config, page=page, form=form)
+    return render_template('register.html', form=form)
 
 @app.route('/activate', methods=['GET', 'POST'])
 def activate_user(username=None, token=None):
-    page = { 'menu_item': 'login' }
     form = ActivateUserForm()
     if form.validate_on_submit():
         user = load_user(form.username.data)
@@ -318,14 +314,13 @@ def activate_user(username=None, token=None):
         if token:
             form.token.data = token
     flash_errors(form)
-    return render_template('simple-form.html', config=config, page=page, form=form)
+    return render_template('simple-form.html', form=form)
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():
     if current_user.is_authenticated:
         flash('You are already signed in', 'default')
         return redirect(url_for('index'))
-    page = { 'menu_item': 'login' }
     form = ForgotPasswordForm()
     if form.validate_on_submit():
         email = form.email.data
@@ -338,11 +333,10 @@ def forgot_password():
         else:
             flash('Email does not exist', 'error')
     flash_errors(form)
-    return render_template('simple-form.html', config=config, page=page, form=form)
+    return render_template('simple-form.html', form=form)
 
 @app.route('/reset', methods=['GET', 'POST'])
 def reset_password(username=None, token=None):
-    page = { 'menu_item': 'login' }
     if current_user.is_authenticated:
         flash('You are already signed in', 'default')
         return redirect(url_for('index'))
@@ -365,5 +359,5 @@ def reset_password(username=None, token=None):
         if token:
             form.token.data = token
     flash_errors(form)
-    return render_template('simple-form.html', config=config, page=page, form=form)
+    return render_template('simple-form.html', form=form)
 
