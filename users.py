@@ -49,11 +49,11 @@ class MyUser(UserMixin):
 
     def send_activation_email(self):
         token = secrets.token_urlsafe(16)
-        self.data['activation_hash'] = token
+        self.data['activation_token'] = token
         msg = Message(config['activation_email']['subject'])
         msg.recipients = [(self.data['fullname'], self.data['email'])]
         msg.sender = config['activation_email']['from']
-        link = url_for('activate_user', username=self.get_id(), hash=token, _external=True)
+        link = url_for('activate_user', username=self.get_id(), token=token, _external=True)
         msg_md = render_template('activation-email.md', link=link, user=self)
         msg.html = render_template_string('{{ md | markdown }}', md=msg_md)
         msg.body = text_maker.handle(msg.html)
@@ -61,27 +61,27 @@ class MyUser(UserMixin):
     
     def send_reset_email(self):
         token = secrets.token_urlsafe(16)
-        self.data['reset_hash'] = token
+        self.data['reset_token'] = token
         msg = Message(config['reset_email']['subject'])
         msg.recipients = [(self.data['fullname'], self.data['email'])]
         msg.sender = config['reset_email']['from']
-        link = url_for('reset_password', username=self.get_id(), hash=token, _external=True)
+        link = url_for('reset_password', username=self.get_id(), token=token, _external=True)
         msg_md = render_template('reset-email.md', link=link, user=self)
         msg.html = render_template_string('{{ md | markdown }}', md=msg_md)
         msg.body = text_maker.handle(msg.html)
         mail.send(msg)
 
-    def activate(self, hash):
-        if hash and self.data.get('activation_hash') == hash:
+    def activate(self, token):
+        if token and self.data.get('activation_token') == token:
             self.data['state'] = 'enabled'
-            self.data.pop('activation_hash')
+            self.data.pop('activation_token')
             return True
         return False
 
-    def allow_reset(self, hash):
-        if hash and self.data.get('reset_hash') == hash:
+    def allow_reset(self, token):
+        if token and self.data.get('reset_token') == token:
             self.data['state'] = 'enabled'
-            self.data.pop('reset_hash')
+            self.data.pop('reset_token')
             return True
         return False
 
@@ -175,7 +175,7 @@ class RegisterForm(ProfileForm):
 class ActivateUserForm(FlaskForm):
     title = 'Account activation'
     username = StringField('Username', validators=[DataRequired()])
-    hash = StringField('Activation token', validators=[DataRequired()])
+    token = StringField('Activation token', validators=[DataRequired()])
     submit = SubmitField('Activate your account')
 
 class ForgotPasswordForm(FlaskForm):
@@ -187,7 +187,7 @@ class ForgotPasswordForm(FlaskForm):
 class PasswordResetForm(FlaskForm):
     title = 'Change your password'
     username = StringField('Username', validators=[DataRequired()])
-    hash = StringField('Security token', validators=[DataRequired()])
+    token = StringField('Security token', validators=[DataRequired()])
     password = PasswordField('Enter a new password', validators=[DataRequired(),
         Regexp(config['password_regexp'], 0, 'Password must contain at least one lowercase \
                 letter, one uppercase letter, and one number. Password must be \
@@ -295,13 +295,13 @@ def register():
     return render_template('register.html', config=config, page=page, form=form)
 
 @app.route('/activate', methods=['GET', 'POST'])
-def activate_user(username=None, hash=None):
+def activate_user(username=None, token=None):
     page = { 'menu_item': 'login' }
     form = ActivateUserForm()
     if form.validate_on_submit():
         user = load_user(form.username.data)
-        hash = form.hash.data
-        if user and hash and user.activate(hash):
+        token = form.token.data
+        if user and token and user.activate(token):
             save_user(user)
             if current_user.is_authenticated:
                 flash('Your account has been activated successfully.', 'success')
@@ -312,11 +312,11 @@ def activate_user(username=None, hash=None):
         flash('Something went wrong. Please contact support.', 'error')
     else:
         username = request.args.get('username')
-        hash = request.args.get('hash')
+        token = request.args.get('token')
         if username:
             form.username.data = username
-        if hash:
-            form.hash.data = hash
+        if token:
+            form.token.data = token
     flash_errors(form)
     return render_template('simple-form.html', config=config, page=page, form=form)
 
@@ -341,7 +341,7 @@ def forgot_password():
     return render_template('simple-form.html', config=config, page=page, form=form)
 
 @app.route('/reset', methods=['GET', 'POST'])
-def reset_password(username=None, hash=None):
+def reset_password(username=None, token=None):
     page = { 'menu_item': 'login' }
     if current_user.is_authenticated:
         flash('You are already signed in', 'default')
@@ -349,8 +349,8 @@ def reset_password(username=None, hash=None):
     form = PasswordResetForm()
     if form.validate_on_submit():
         user = load_user(form.username.data)
-        hash = form.hash.data
-        if user and user.allow_reset(hash):
+        token = form.token.data
+        if user and user.allow_reset(token):
             user.set_password(form.password.data)
             save_user(user)
             flash('Your password has been changed. You can sign in now.', 'success')
@@ -359,11 +359,11 @@ def reset_password(username=None, hash=None):
         return redirect(url_for('forgot_password'))
     else:
         username = request.args.get('username')
-        hash = request.args.get('hash')
+        token = request.args.get('token')
         if username:
             form.username.data = username
-        if hash:
-            form.hash.data = hash
+        if token:
+            form.token.data = token
     flash_errors(form)
     return render_template('simple-form.html', config=config, page=page, form=form)
 
