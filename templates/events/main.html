@@ -1,0 +1,67 @@
+{% extends "body.html" %}
+
+{% block content %}
+
+<ul class="tab">
+    <li class="tab-item {% if past_or_future=='future' %}active{% endif %}">
+    <a href="{{ url_for('events', past_or_future='future') }}">Future events</a>
+</li>
+<li class="tab-item {% if past_or_future=='past' %}active{% endif %}">
+    <a href="{{ url_for('events', past_or_future='past') }}">Past events</a>
+</li>
+<li class="tab-item tab-action">
+<div>
+<button data-href="/events/submit-event" class="btn clickable"><i class="fa fa-plus"></i>Create event</button>
+</div>
+</li>
+</ul>
+
+<table class="table table-hover table-striped table-condensed">
+    <thead>
+        <tr>
+            <th>Date and Time</th>
+            <th>Seminar</th>
+            <th>Speaker</th>
+            <th>Title</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    {% for item in items | sort_by_date(past_or_future=='past') %}
+        <tr class="table-row-clickable clickable" 
+            data-href="{{ url_for('events_item', post=item.slug) }}">
+            <td>
+            <time class="date-time-long" datetime="{{ item.date.isoformat() }}"></time>
+            </td>
+            <td>
+            {% if item.seminar %}
+            {{ item.seminar }}
+            {% endif %}
+            </td>
+
+            <td>
+            {% if item.talk_speaker %}
+            {{ item.talk_speaker }}
+            {% endif %}
+            </td>
+
+            <td>
+            {% if item.talk_title %}
+            {{ item.talk_title }}
+            {% endif %}
+            </td>
+
+        </tr>
+
+{% endfor %}
+</table>
+</div>
+{#
+<div id="listing-footer">
+
+    {% include 'partials/pagination.html.twig' with {base_url: page.url, pagination: collection.params.pagination} %}
+
+</div>
+#}
+
+{% endblock %}

@@ -1,0 +1,29 @@
+
+<div class="bricklayer">
+
+{% for item in items | sort_by_date(True) %}
+<div class="card">
+    <div class="card-header">
+        <div class="card-title h5">
+            <a href="{{ url_for('news_item', post=item.slug) }}">
+                {{ item.title }}
+            </a>
+        </div>
+        <div class="card-subtitle">
+            {% include "news/author-date.html" %}
+        </div>
+    </div>
+    <div class="card-body">
+        {{ item.content | markdown | striptags | truncate(300) }}
+    </div>
+</div>
+{% endfor %}
+
+</div>
+
+
+    <script>
+        $( document ).ready(function() {
+            var bricklayer = new Bricklayer(document.querySelector('.bricklayer'));
+        });
+    </script>

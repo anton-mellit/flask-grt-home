@@ -118,3 +118,27 @@ section.section {
     vertical-align: top;
 }
 
+.card {
+    margin-bottom: 1em;
+    border: 0;
+    box-shadow: 0 10px 45px -9px rgba(0, 0, 0, 0.1)
+}
+
+.bricklayer-column-sizer {
+    width: 100%;
+}
+
+@media screen and (min-width: 1200px) {
+  .bricklayer-column-sizer {
+    /* divide by 3. */
+    width: 33.3%;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .bricklayer-column-sizer {
+    /* divide by 2. */
+    width: 50%;
+  }
+}
+

@@ -1,0 +1,21 @@
+{% extends "news/main.html" %}
+
+{% block news_content %}
+
+<ul class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="{{ url_for('news') }}">News</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{{ url_for('news_item', post=item.slug) }}">{{ item.title }}</a>
+    </li>
+
+
+<h1>{{ item.title }}</h1>
+<p>
+            {% include "news/author-date.html" %}
+</p>
+
+{{ item.content | markdown }}
+
+{% endblock %}

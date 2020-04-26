@@ -7,9 +7,15 @@
         <meta name="description" content="{{ site.description }}" />
         <link rel="stylesheet" href="{{ url_for('static', filename='spectre.min.css') }}"/>
         <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome.min.css') }}"/>
-        <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}"/>
         <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}"/>
         <script src="{{ url_for('static', filename='jquery-3.5.0.min.js') }}"></script>
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bricklayer/0.4.2/bricklayer.min.css">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/bricklayer/0.4.2/bricklayer.min.js"></script>
+        <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}"/>
+        <script src="{{ url_for('static', filename='custom.js') }}"></script>
     </head>
     <body>
         <div class="hide-sm">

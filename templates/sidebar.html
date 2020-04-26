@@ -1,0 +1,23 @@
+<h4>Upcoming seminars:</h4>
+
+{% for item in events %}
+
+<p>
+<strong><time class="date-time-long" datetime="{{ item.date }}"></time></strong>
+    {% if item.seminar %}
+    {{ item.seminar }}
+    {% endif %}
+
+    {% if item.talk_speaker %}
+    <strong>{{ item.talk_speaker }}</strong>
+    {% endif %}
+    
+    {% if item.talk_title %}
+    <em>{{ item.talk_title }}</em>
+    {% endif %}
+
+    <a href="{{ url_for('events_item', post=item.slug) }}">more...</a>
+</p>
+
+{% endfor %}
+

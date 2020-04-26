@@ -1,0 +1,98 @@
+{% extends 'body.html' %}
+
+{% block content %}
+    {% if item.seminar %}
+    <h3>{{ item.seminar }}</h3>
+    {% endif %}
+
+    {% if item.talk_speaker %}
+    <p>
+    <strong>{{ item.talk_speaker }}</strong>
+    </p>
+    {% endif %}
+
+    {% if item.talk_title %}
+    <p><em>{{ item.talk_title }}</em></p>
+    {% endif %}
+
+    <p><time class="date-time-long" datetime="{{ item.date.isoformat() }}"></time></p>
+
+    {% if item.duration and item.duration != "unknown" %}
+    {% set conversion={ 15: '15 minutes',
+                        30: '30 minutes',
+                        45: '45 minutes',
+                        60: '1 hour',
+                        75: '1 hour 15 minutes',
+                        90: '1 hour 30 minutes',
+                        120: '2 hours',
+                        180: '3 hours',
+                        240: '4 hours',
+                        360: '6 hours' } %}
+    <p>Duration: {{ conversion[item.duration] }}</p>
+    {% endif %}
+
+    {% if item.online_access %}
+        <p>
+        Access information:
+        {% set data = item.online_access.strip() %}
+        {% set spl = data.split(' ') %}
+        {% for part in spl %}
+            {% if part.startswith('http://') or 
+                    part.startswith('https://') %}
+                    <a href="{{ part }}" target="_blank">{{ part }}</a>
+            {% else %}
+                {{ part }}
+            {% endif %}
+        {% endfor %}
+        </p>
+    {% endif %}
+            
+            
+
+    {% if item.online_secret %}
+        <p>
+        {% if current_user.is_authenticated %}
+            Secret:
+            {% set data = item.online_secret.strip() %}
+            {% set spl = data.split(' ') %}
+            {% for part in spl %}
+                {% if part.startswith('http://') or 
+                        part.startswith('https://') %}
+                        <a href="{{ part }}" target="_blank">{{ part }}</a>
+                {% else %}
+                    {{ part }}
+                {% endif %}
+            {% endfor %}
+        {% else %}
+        To access, you need a secret. Please <a href="{{ url_for('login') }}">sign in</a>.
+        {% endif %}
+        </p>
+    {% endif %}
+
+    {{ item.content|markdown }}
+
+    <p>
+    Submitted by:
+    {{ item.username | user_fullname }}
+    </p>
+
+    {% if item.username==current_user.get_id() %}
+    <button class="btn clickable" data-href='/events/edit-event?slug={{ item.slug }}';">Edit</button>
+    {% endif %}
+    
+    {#{% set show_form = grav.user.authorize('site.login') %}
+
+    {% if item.allow_comments %}
+
+    {% include 'partials/comments.html.twig' with {'page': page} %}
+
+    {% endif %}#}
+{% endblock %}
+
+
+{#{% extends 'partials/base.html.twig' %}
+
+{% block content %}
+    {{ page.content }}
+{% endblock %}
+#}

@@ -1,0 +1,11 @@
+<span class='post-date'>
+    <time datetime="{{ item.date.isoformat() }}">
+        <i class="fa fa-calendar"></i>
+        {{ item.date.strftime(site.news.dateformat) }}
+    </time>
+</span>
+{% set username = item.username | default(item.taxonomy.author[0]) %}
+{% if username %}
+    <span class='post-author'>by {{ username | user_fullname }}</span>
+{% endif %}
+
