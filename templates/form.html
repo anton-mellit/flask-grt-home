@@ -1,0 +1,79 @@
+
+{% set field2class = {'StringField': 'form-input',
+                    'PasswordField': 'form-input',
+                    'SelectField': 'form-select',
+                    'TextAreaField': 'form-input md-editor',
+                    'SubmitField': 'btn btn-primary'} %}
+
+{% set field_with_label = ['StringField', 'PasswordField', 
+            'SelectField', 'TextAreaField'] %}
+
+
+{% macro dropzone(field) %}
+    <div class="form-group">
+        {{ field.label(class_='form-label') }}
+        {{ field(class_='invisible') }}
+        <div class="dropzone" 
+             upload-url="{{ url_for_self(_action='upload') }}"
+            csrf-token="{{ csrf_token() }}"
+            name="{{ field.name }}"
+            data-options="{{ field.options | json_encode }}"
+            >
+        </div>
+    </div>
+
+{% endmacro %}
+
+{% macro render_field(field) %}
+    <div class="form-group">
+        {% if field.type=='BooleanField' %}
+            <label class="form-checkbox form-inline">
+                {{ field() }}
+                <i class="form-icon"></i> {{ field.label.text }}
+            </label>
+        {% elif field.type=='DropzoneField' %}
+            {{ dropzone(field) }}
+        {% else %}
+            {% if field.type in field_with_label %}
+                {{ field.label(class_='form-label') }}
+            {% endif %}
+            {% if field.type in field2class %}
+                {{ field(class_=field2class[field.type]) }}
+            {% else %}
+                {{ field() }}
+            {% endif %}
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro render_record(form, record) %}
+    {% if record is mapping %}
+        {% if record.columns %}
+            <div class="columns">
+                {% for col in record.columns %}
+                    <div class="column col-{{ col.width }}">
+                        {{ render_record(form, col.field) }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% else %}
+        {{ render_field(form[record]) }}
+    {% endif %}
+{% endmacro %}
+
+
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    {% if form.layout %}
+        {% for record in form.layout %}
+            {{ render_record(form, record) }}
+        {% endfor %}
+    {% else %}
+        {% for field in form %}
+            {{ render_field(field) }}
+        {% endfor %}
+    {% endif %}
+</form>
+
+

@@ -35,33 +35,41 @@ from flaskext.markdown import Markdown
 markdown = Markdown(app, extensions=['extra', 'mdx_math'], 
         extension_configs={'mdx_math': {'enable_dollar_delimiter': True}})
 
+from bleach import clean as bleach_clean
+from bleach.sanitizer import ALLOWED_TAGS
+@app.template_filter()
+def bleach(s):
+    return bleach_clean(s, tags=ALLOWED_TAGS+['p', 'pre', 'img'])
+
+import json
+
+@app.template_filter()
+def json_encode(obj):
+    return json.dumps(obj)
+
 import users
 import pages
+import events
 
 from datetime import datetime, timedelta, timezone
 
 from itertools import islice
 
-def sidebar_events():
-    items = pages.load_folder('data/events', 'myevent.md')
-    items = pages.date_between(items, \
-                datetime.now(timezone.utc) - timedelta(hours=1),
-                None)
-    items = pages.sort_by_date(items)
-    return islice(items, 0, 5)
+def url_for_self(**args):
+    return url_for(request.endpoint, **dict(request.view_args, **args))
 
+app.jinja_env.globals['url_for_self'] = url_for_self
 
 @app.route('/news')
 def news():
-    items = pages.load_folder('data/news', 'item.md')
-    return render_template('news/main.html', items=items, events=sidebar_events())
+    return render_template('news/main.html', page=request.args.get('page'))
 
 @app.route('/news/<post>')
 def news_item(post):
     item = pages.load_folder_item('data/news', post, 'item.md')
     if not item:
         abort(404)
-    return render_template('news/item.html', item=item, events=sidebar_events())
+    return render_template('news/item.html', item=item)
 
 app.add_url_rule('/', 'index', news)
 
@@ -70,32 +78,8 @@ app.add_url_rule('/', 'index', news)
 def events(past_or_future='future'):
     if past_or_future not in ('past', 'future'):
         abort(404)
-    items = pages.load_folder('data/events', 'myevent.md')
-    if past_or_future=='future':
-        items = pages.date_between(items, \
-                datetime.now(timezone.utc) - timedelta(hours=1),
-                None)
-    else:
-        items = pages.date_between(items, \
-                None,
-                datetime.now(timezone.utc))
-
     return render_template('events/main.html', \
-            past_or_future=past_or_future, items=items)
-
-@app.route('/event/<post>/')
-def events_item(post):
-    item = pages.load_folder_item('data/events', post, 'myevent.md')
-    if not item:
-        abort(404)
-    return render_template('events/item.html', item=item)
-
-@app.route('/event/<post>/<fname>')
-def events_item_file(post, fname):
-    path = pages.load_folder_item_file('data/events', post, fname, 'myevent.md')
-    if not path:
-        abort(404)
-    return send_file(path)
+            past_or_future=past_or_future, page=request.args.get('page'))
 
 @app.route('/favicon.ico')
 def favicon():

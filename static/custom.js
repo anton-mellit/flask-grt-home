@@ -83,9 +83,10 @@ function time_in_words(t) {
     }
 }
 
+Dropzone.autoDiscover = false;
 
 $(document).ready(function($) {
-    $(".table-row-clickable").click(function() {
+    $(".clickable").click(function() {
         window.document.location = $(this).data("href");
     });
     
@@ -103,4 +104,52 @@ $(document).ready(function($) {
 
         $(this).text(d_str);
     });
+
+	$(".md-editor").each(function(){
+		var simplemde = new SimpleMDE({
+			element: this,
+			forceSync: true,
+			hideIcons: ["side-by-side", "fullscreen"],
+			spellChecker: false,
+			toolbar: ["bold", "italic", "heading", "|",
+				"quote", "unordered-list", "ordered-list", "|",
+				"link", "table", "|",
+				"undo", "redo", "|",
+				"preview", "guide"
+			]
+		});
+	});    
+    $( ".dropzone" ).each(function() {
+        var paramsVal = { csrf_token: $(this).attr("csrf-token") };
+        var param = $(this).attr("name");
+        var options = {
+            url: $(this).attr("upload-url"),
+            params:paramsVal,
+            addRemoveLinks: true,
+            createImageThumbnails: false,
+            thumbnail: function(file, dataUrl) {},
+        };
+        options = Object.assign(options, $(this).data("options"));
+
+        var dz = new Dropzone( this, options );
+        JSON.parse($( "#"+param ).val()).forEach(function(f) {
+            var f2 = { name : f.name, type: f.type, size:f.size, accepted: true };
+            dz.files.push(f2);
+            dz.emit("addedfile", f2);
+            dz.emit("complete", f2);
+            // dz.displayExistingFile(f2, '', null, null, false);
+        });
+
+        $(this).parents("form").submit( function() {
+            console.log("Submit");
+            var form = this;
+            var res = [];
+            dz.getAcceptedFiles().forEach(function(f) {
+                res.push({name: f.name, type: f.type, size: f.size});
+            });
+            console.log(JSON.stringify(res));
+            $( "#"+param ).val(JSON.stringify(res));
+        });
+    });
 });
+

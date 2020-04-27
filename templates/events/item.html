@@ -18,16 +18,16 @@
     <p><time class="date-time-long" datetime="{{ item.date.isoformat() }}"></time></p>
 
     {% if item.duration and item.duration != "unknown" %}
-    {% set conversion={ 15: '15 minutes',
-                        30: '30 minutes',
-                        45: '45 minutes',
-                        60: '1 hour',
-                        75: '1 hour 15 minutes',
-                        90: '1 hour 30 minutes',
-                        120: '2 hours',
-                        180: '3 hours',
-                        240: '4 hours',
-                        360: '6 hours' } %}
+    {% set conversion={ '15': '15 minutes',
+                        '30': '30 minutes',
+                        '45': '45 minutes',
+                        '60': '1 hour',
+                        '75': '1 hour 15 minutes',
+                        '90': '1 hour 30 minutes',
+                        '120': '2 hours',
+                        '180': '3 hours',
+                        '240': '4 hours',
+                        '360': '6 hours' } %}
     <p>Duration: {{ conversion[item.duration] }}</p>
     {% endif %}
 
@@ -77,7 +77,7 @@
     </p>
 
     {% if item.username==current_user.get_id() %}
-    <button class="btn clickable" data-href='/events/edit-event?slug={{ item.slug }}';">Edit</button>
+    <button class="btn clickable" data-href="{{ url_for('edit_event', post=item.slug) }}">Edit</button>
     {% endif %}
     
     {#{% set show_form = grav.user.authorize('site.login') %}

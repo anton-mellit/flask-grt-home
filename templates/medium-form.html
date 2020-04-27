@@ -1,0 +1,10 @@
+{% extends "body.html" %}
+
+{% block content %}
+<section class="{{ form.outer_class | default('medium-form-container') }}">
+    {% if form.title %}
+    <h1>{{ form.title }}</h1>
+    {% endif %}
+    {% include "form.html" %}
+</section>
+{% endblock %}

@@ -116,9 +116,9 @@ def find_user_by_email(email):
     return None
 
 def flash_errors(form):
-    for _, errors in form.errors.items():
+    for field, errors in form.errors.items():
         for error in errors:
-            flash(error, 'error')
+            flash(field + ': ' + error, 'error')
 
 def save_user(user):
     with (BASE_PATH / ('data/accounts/%s.yaml' % (user.get_id(),))).open('w') as f:

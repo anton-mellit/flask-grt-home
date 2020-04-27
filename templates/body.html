@@ -9,11 +9,20 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome.min.css') }}"/>
         <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}"/>
         <script src="{{ url_for('static', filename='jquery-3.5.0.min.js') }}"></script>
+        <!-- SimpleMDE -->
+        <link href="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.css" type="text/css" rel="stylesheet">
+        <script src="//cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+        <!-- bricklayer -->
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bricklayer/0.4.2/bricklayer.min.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/bricklayer/0.4.2/bricklayer.min.js"></script>
+        <!-- MathJax -->
         <script type="text/javascript" async
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
+        <!-- Dropzone -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='dropzone.min.css') }}"/>
+        <script src="{{ url_for('static', filename='dropzone.min.js') }}"></script>
+        <!-- custom -->
         <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}"/>
         <script src="{{ url_for('static', filename='custom.js') }}"></script>
     </head>
@@ -71,7 +80,6 @@
             <a href="javascript:document.getElementById('mobile-menu-container').classList.remove('open');" class="mobile-menu-close">
                 <i class="fa fa-2x fa-close"></i>
             </a>
-
             <ul class="nav">
             {% for item in site.menu %}
             {% set active = '' %}
@@ -90,7 +98,6 @@
                     <img src="{{ current_user.avatar(24) }}" />
                 <a href="/profile" class="btn btn-link">
                     {{ current_user.data.fullname }}</a>
-                </li>
                 <a href="/logout" class="btn btn-link">Sign out</a>
                 {% else %}
                 <a href="/login" class="btn btn-link">Sign in</a>
@@ -115,6 +122,8 @@
                 {% endblock %}
             </section>
         </main>
+    <script>
+    </script>        
     </body>
 </html>
 

@@ -10,13 +10,21 @@
     <a href="{{ url_for('events', past_or_future='past') }}">Past events</a>
 </li>
 <li class="tab-item tab-action">
-<div>
-<button data-href="/events/submit-event" class="btn clickable"><i class="fa fa-plus"></i>Create event</button>
-</div>
+    <button data-href="{{ url_for('edit_event') }}" class="btn btn-link clickable"><i class="fa fa-plus"></i> Create</button>
 </li>
 </ul>
 
-<table class="table table-hover table-striped table-condensed">
+{% if past_or_future=='future' %}
+{% set collection=future_events() %}
+{% else %}
+{% set collection=past_events() %}
+{% endif %}
+
+{% set page = page | default("0") | int %}
+
+{% set items = collection.page(page) %}
+
+<table class="table table-hover table-striped">
     <thead>
         <tr>
             <th>Date and Time</th>
@@ -27,7 +35,7 @@
     </thead>
     <tbody>
 
-    {% for item in items | sort_by_date(past_or_future=='past') %}
+    {% for item in items %}
         <tr class="table-row-clickable clickable" 
             data-href="{{ url_for('events_item', post=item.slug) }}">
             <td>
@@ -55,7 +63,9 @@
 
 {% endfor %}
 </table>
-</div>
+
+{% include "pagination.html" %}
+
 {#
 <div id="listing-footer">
 

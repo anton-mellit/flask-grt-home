@@ -34,47 +34,57 @@ Put your custom CSS in this file.
 
 .mobile-menu .nav-brand {
     text-transform: uppercase;
-    font-size: 1.5em;
+    font-size: 1.2rem;
     font-weight: 400;
+}
+.mobile-menu a {
+    font-size: 1.2rem;
+}
+.mobile-menu .nav-item {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
 }
 
 .navbar {
-    height: 3em;
+    height: 3rem;
     position: fixed;
     z-index: 2;
     top: 0;
     width: 100%;
-    padding-left: 1em;
-    padding-right: 1em;
+    padding-left: 1rem;
+    padding-right: 1rem;
     border-bottom: 1px solid rgba(128, 128, 192, 0.2);
     background: white;
     overflow: hidden;
-    max-width: 64em;
+    max-width: 64rem;
 }
 
 main {
-    padding-top: 3em;
-    padding-left: 1em;
-    padding-right: 1em;
-    max-width: 64em;
+    padding-top: 3rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    max-width: 64rem;
 }
 
 section.section {
-    padding-top: 1em;
-    padding-bottom: 1em;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 
 .small-form-container {
-    max-width: 32em;
+    max-width: 32rem;
     border: 4px solid #eee;
     border-radius: 4px;
-    padding: 1em 3em 3em 3em;
+    padding: 1rem 3rem 3rem 3rem;
     text-align: center;
-    margin: 4em auto;
+    margin: 4rem auto;
 }
 
 .medium-form-container {
-    max-width: 32em;
+    max-width: 32rem;
+}
+
+.large-form-container {
 }
 
 .overlay {
@@ -97,11 +107,16 @@ section.section {
     opacity: 0.95;
 }
 
+.invisible {
+    position: fixed;
+    visibility: hidden;
+}
+
 .mobile-menu {
-    padding-left: 1em;
-    padding-right: 1em;
-    padding-top: .5em;
-    padding-bottom: 1em;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: .5rem;
+    padding-bottom: 1rem;
 }
 
 .mobile-menu-profile {
@@ -141,4 +156,14 @@ section.section {
     width: 50%;
   }
 }
+
+.hero.hero-xs {
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+}
+
+body {
+    font-size: .7rem;
+}
+
 
