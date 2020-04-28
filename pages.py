@@ -34,7 +34,7 @@ def load_folder_item(folder, item, filename):
 
 def to_folder_name(name):
     name = name.strip()
-    name = ''.join(ch if ch in '1234567890qwertyuioplkjhgfdsazxcvbnm' else '-' for ch in name)
+    name = ''.join(ch if ch in '1234567890qwertyuioplkjhgfdsazxcvbnm' else '-' for ch in name.lower())
     if not name or name[0]=='-':
         name = 'x' + name
     return name
