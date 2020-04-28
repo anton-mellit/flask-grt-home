@@ -149,6 +149,7 @@ def timezone_widget(field, **kwargs):
     return Markup(res)
 
 class ProfileForm(FlaskForm):
+    title = 'Profile'
     username = StringField('Username')
     fullname = StringField('Full name', validators=[DataRequired()])
     email = StringField('Click here to change the email (needs re-activation)', validators=[DataRequired(), Email()])
@@ -160,6 +161,7 @@ class ProfileForm(FlaskForm):
     submit = SubmitField('Save')
 
 class RegisterForm(ProfileForm):
+    title = 'Registration'
     username = StringField('Username', validators=[DataRequired(), 
         Regexp(config['username_regexp'], 0, 'Username can only contain lowercase letters, \
                 numbers and symbols ._-. Username must be at least 3 characters long.')])
@@ -289,7 +291,7 @@ def register():
                     spam folder.' % (user.data['email'],), 'success')
             return redirect(url_for('index'))
     flash_errors(form)
-    return render_template('register.html', form=form)
+    return render_template('medium-form.html', form=form)
 
 @app.route('/activate', methods=['GET', 'POST'])
 def activate_user(username=None, token=None):
