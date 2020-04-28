@@ -1,5 +1,7 @@
 {% extends "body.html" %}
 
+{% block title %}{% if form.title %}{{ form.title }}| {% endif %}{{ site.title }}{% endblock %}
+
 {% block content %}
 <section class="{{ form.outer_class | default('medium-form-container') }}">
     {% if form.title %}

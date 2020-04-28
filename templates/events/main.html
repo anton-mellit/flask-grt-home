@@ -1,5 +1,11 @@
 {% extends "body.html" %}
 
+{% block title %}
+{% if past_or_future=='future' %}Future events
+{% else %}Past events
+{% endif %} | {{ site.title }}
+{% endblock %}
+
 {% block content %}
 
 <ul class="tab">

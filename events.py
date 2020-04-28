@@ -20,7 +20,24 @@ from dateutil import tz
 
 import json
 
-from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_filename as w_secure_filename
+
+def secure_filename(s):
+    s = w_secure_filename(s)
+    if not s:
+        s = 'x'
+    return s
+
+print(secure_filename('')+'_')
+print(secure_filename('.')+'_')
+print(secure_filename('..')+'_')
+print(secure_filename('...')+'_')
+print(secure_filename('.abc.def.pdf')+'_')
+print(secure_filename('abc.def.pdf')+'_')
+print(secure_filename('def.pdf')+'_')
+print(secure_filename('.pdf')+'_')
+
+
 
 def datetime_now():
     return datetime.now(timezone.utc)
@@ -58,6 +75,7 @@ class DropzoneField(StringField):
         self.options = options
 
 class EventForm(FlaskForm):
+    title = 'New event'
     outer_class = 'large-form-container'
     layout = config['site']['layouts']['edit_event']
     seminar = StringField('Seminar, institution', validators=[DataRequired()])
@@ -72,8 +90,11 @@ class EventForm(FlaskForm):
     online_secret = StringField('Secret (e.g. password, we show it only to registered users)')
     content = TextAreaField('Abstract and other information')
     allow_comments = BooleanField('Allow registered users to leave comments?', default=True)
-    attachments = DropzoneField('Upload attachments here')
     submit = SubmitField('Save')
+
+class EventFormAttachments(EventForm):
+    title = 'Edit event'
+    attachments = DropzoneField('Upload attachments here')
 
 
 @app.route('/edit-event/<post>', methods=['GET', 'POST'])
@@ -96,16 +117,22 @@ def edit_event(post=None, action=None):
         return edit_event_action(post, action)
     elif request.method=='GET':
         if post is not None:
-            form = EventForm(data=item.metadata)
+            form = EventFormAttachments(data=item.metadata)
             form.content.data = item.content
-            attachments = list(item['attachments'])
+            if 'attachments' in item.metadata:
+                attachments = list(item['attachments'])
+            else:
+                attachments = []
             for att in attachments:
                 att['url'] = url_for('events_item_file', post=post, fname=att['name'])
             form.attachments.data = json.dumps(attachments)
         else:
             form = EventForm()
     else:
-        form = EventForm()
+        if post is not None:
+            form = EventFormAttachments()
+        else:
+            form = EventForm()
         if form.validate_on_submit():
             data = form.data
             if post is None:
@@ -114,10 +141,9 @@ def edit_event(post=None, action=None):
                 item['date_created'] = datetime_now()
             else:
                 item['date_modified'] = datetime_now()
-
-            item['attachments'] = json.loads(data['attachments'])
-            for attachment in item['attachments']:
-                attachment['name'] = secure_filename(attachment['name'])
+                item['attachments'] = json.loads(data['attachments'])
+                for attachment in item['attachments']:
+                    attachment['name'] = secure_filename(attachment['name'])
 
             for key in ['seminar', 'entered_date', 'entered_time', 'entered_timezone',
                     'duration', 'talk_speaker', 'talk_title', 'online_access', 'online_secret',
@@ -142,10 +168,8 @@ def edit_event(post=None, action=None):
     return render_template('medium-form.html', form=form)
 
 def edit_event_action(post, action):
-    if action=='upload':
+    if action=='upload' and post:
         for f in request.files.values():
             save_folder_item_file('data/events', post, secure_filename(f.filename), 'myevent.md', f)
-    print('Called')
-    print(action)
     return 'OK'
 

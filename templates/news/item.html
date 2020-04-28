@@ -1,5 +1,7 @@
 {% extends "news/main.html" %}
 
+{% block title %}{{ item.title }} | {{ site.title }}{% endblock %}
+
 {% block news_content %}
 
 <ul class="breadcrumb">

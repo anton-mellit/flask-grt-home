@@ -1,5 +1,7 @@
 {% extends 'body.html' %}
 
+{% block title %}{{ item.seminar }} | {{ site.title }}{% endblock %}
+
 {% block content %}
     {% if item.seminar %}
     <h3>{{ item.seminar }}</h3>

@@ -58,7 +58,9 @@
             </div>
         {% endif %}
     {% else %}
+        {% if record in form %}
         {{ render_field(form[record]) }}
+        {% endif %}
     {% endif %}
 {% endmacro %}
 
