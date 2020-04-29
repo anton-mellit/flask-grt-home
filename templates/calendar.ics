@@ -1,0 +1,47 @@
+{% set ical %}
+
+BEGIN:VCALENDAR
+PRODID:-//grt-home.org//GRT at home calendar//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+URL:{{ url_for('calendar', _external=True) }}
+NAME:GRT at home events
+X-WR-CALNAME:GRT at home events
+DESCRIPTION:Automatically updated list of events announced on grt-home.org
+X-WR-CALDESC:Automatically updated list of events announced on grt-home.org
+REFRESH-INTERVAL;VALUE=DURATION:PT1H
+X-PUBLISHED-TTL:PT1H
+
+{% for item in calendar().items %}
+
+BEGIN:VEVENT
+UID:{{ item.slug }}@events.grt-home.org
+URL:{{ url_for('events_item', post=item.slug, _external=True) }}
+{% if item.date_modified %}
+DTSTAMP:{{ item.date_modified | format_date_ical }}
+{% else %}
+DTSTAMP:{{ item.date_created | format_date_ical }}
+{% endif %}
+DTSTART:{{ item.date | format_date_ical }}
+{% if item.duration and item.duration!='unknown' %}
+DTEND:{{ item.date | modify_datetime(minutes=(item.duration | int)) | format_date_ical }}
+{% endif %}
+SUMMARY: 
+    {%- if item.seminar %}
+    {{- item.seminar }}
+    {% endif %}
+    {%- if item.talk_speaker %}
+    {{- item.talk_speaker }}
+    {% endif %}
+    {%- if item.talk_title %}
+    {{- item.talk_title }}
+    {% endif %}
+
+END:VEVENT
+
+{% endfor %}
+
+END:VCALENDAR
+
+{% endset %}{{ ical | format_ical }}
