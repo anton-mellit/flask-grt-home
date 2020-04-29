@@ -166,4 +166,11 @@ body {
     font-size: .7rem;
 }
 
+.page-content {
+    padding-right: 2rem;
+}
 
+pre code{
+    white-space:pre;
+    padding:0 0 0 0;
+}
