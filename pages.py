@@ -12,6 +12,9 @@ def load_file(path, slug):
         if key in ('date', 'date_created', 'date_modified') and \
                 isinstance(post[key], str) and post[key]:
             post[key] = datetime.fromisoformat(post[key])
+    if 'username' not in post.keys():
+        if 'taxonomy' in post.keys() and 'author' in post['taxonomy']:
+            post['username'] = post['taxonomy']['author'][0]
     post['slug'] = slug
     return post
 
@@ -99,14 +102,6 @@ from itertools import islice
 @app.template_filter()
 def first_n(it, n):
     return islice(it, 0, n)
-
-@app.template_filter()
-def user_fullname(username):
-    if username:
-        user = load_user(username)
-        if user:
-            return user.data['fullname']
-    return None
 
 from datetime import datetime, timedelta, timezone
 

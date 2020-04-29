@@ -363,3 +363,19 @@ def reset_password(username=None, token=None):
     flash_errors(form)
     return render_template('simple-form.html', form=form)
 
+@app.template_filter()
+def user_fullname(username):
+    if username:
+        user = load_user(username)
+        if user:
+            return user.data['fullname']
+    return None
+
+@app.template_filter()
+def user_object(username):
+    if username:
+        user = load_user(username)
+        return user
+    return None
+
+
