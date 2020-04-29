@@ -1,4 +1,6 @@
-from flask import Flask, render_template, render_template_string, flash, redirect, url_for, request, abort, send_file
+from flask import Flask, render_template, render_template_string, \
+        flash, redirect, url_for, request, abort, send_file, \
+        make_response
 
 app = Flask(__name__)
 
@@ -17,7 +19,7 @@ with (BASE_PATH / 'config.yaml').open() as f:
 def inject_site():
     return { 'site': config['site'] }
 
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user, login_required
 login_manager = LoginManager(app)
 
 from flask_wtf.csrf import CSRFProtect
@@ -46,6 +48,31 @@ import json
 @app.template_filter()
 def json_encode(obj):
     return json.dumps(obj)
+
+@app.template_filter()
+def format_ical(s):
+    res = []
+    for line in s.split('\n'):
+        for i in range((len(line)-1)//74 + 1):
+            if i>0:
+                res.append(' ')
+            line_part = line[i*74:(i+1)*74]
+            if line_part.strip():
+                res.append(line_part+'\r\n')
+    return ''.join(res)
+
+@app.template_filter()
+def modify_datetime(dt, **delta):
+    return dt + timedelta(**delta)
+
+from dateutil import tz
+@app.template_filter()
+def format_datetime(dt, format_string, timezone):
+    return dt.astimezone(tz.gettz(timezone)).strftime(format_string)
+
+@app.template_filter()
+def format_date_ical(dt):
+    return dt.astimezone(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
 
 import users
 import pages
@@ -84,6 +111,34 @@ def events(past_or_future='future'):
 @app.route('/favicon.ico')
 def favicon():
     return redirect(url_for('static', filename='favicon.ico'))
+
+@app.route('/calendar')
+def calendar():
+    response = make_response(render_template('calendar.ics'))
+    response.headers['Content-Type'] = 'text/calendar; charset=utf=8'
+    response.headers['Content-Disposition'] = 'attachment; filename=calendar.ics'
+    return response
+
+
+from html2text import HTML2Text
+text_maker = HTML2Text()
+text_maker.ignore_links = True
+
+@app.route('/test-digest')
+@login_required
+def test_digest():
+    msg_md = render_template('digest.md', user=current_user)
+    html = render_template_string('{{ md | markdown }}', md=msg_md)
+    body = text_maker.handle(html)
+    return html + '<h1>Plain text:</h1><pre><code>' + body + '</code></pre>'
+
+for f in (BASE_PATH / 'pages').iterdir():
+    if f.suffix=='.md':
+        def page_route():
+            page = pages.load_file(f, f.stem)
+            return render_template('default.html', page=page)
+        app.add_url_rule('/'+f.stem, f.stem, page_route)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
