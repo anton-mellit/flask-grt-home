@@ -22,14 +22,15 @@ Put your custom CSS in this file.
     padding: 2px;
 }
 
-.table-row-clickable{
+.clickable{
     cursor:pointer;
 }
 
 .navbar .navbar-brand {
     text-transform: uppercase;
-    font-size: 1.5em;
+    font-size: 1.2rem;
     font-weight: 400;
+    color: #454d5d;
 }
 
 .mobile-menu .nav-brand {
@@ -38,11 +39,13 @@ Put your custom CSS in this file.
     font-weight: 400;
 }
 .mobile-menu a {
-    font-size: 1.2rem;
+    font-size: 0.9rem;
 }
 .mobile-menu .nav-item {
-    padding-top: .5rem;
-    padding-bottom: .5rem;
+    padding-top: .1rem;
+    padding-bottom: .1rem;
+    background: rgba(102,113,137,.1);
+    cursor: pointer;
 }
 
 .navbar {
@@ -58,6 +61,25 @@ Put your custom CSS in this file.
     overflow: hidden;
     max-width: 64rem;
 }
+.navbar a.btn.btn-link{
+    font-weight: 700;
+    font-size: 0.7rem;
+    color: #454d5d;
+    vertical-align: middle;
+}
+.navbar img{
+    margin-left: 1rem;
+}
+.navbar a.btn.btn-link.active{
+    color: #3085ee;
+}
+.navbar a.navbar-brand:hover{
+    color: #3085ee;
+}
+.navbar a.btn.btn-link:hover{
+    color: #3085ee;
+}
+
 
 main {
     padding-top: 3rem;
@@ -120,6 +142,7 @@ section.section {
 }
 
 .mobile-menu-profile {
+    margin-top: .5rem;
     text-align: center;
     vertical-align: bottom;
 }

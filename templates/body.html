@@ -31,7 +31,7 @@
         <script src="{{ url_for('static', filename='custom.js') }}"></script>
     </head>
     <body class="language-text">
-        <div class="hide-sm">
+        <div class="hide-md">
             <header class="navbar">
             <section class="navbar-section">
                 <a href="{{ url_for('index') }}" class="navbar-brand">
@@ -48,20 +48,20 @@
                     {{ item.title }}
                 </a>
                 {% endfor %}
-            </section>
-            <section class="navbar-section">
+            <!--</section>
+            <section class="navbar-section">-->
                 {% if current_user.is_authenticated %}
-                    <img src="{{ current_user.avatar(24) }}" class="img-responsive"/>
-                <a href="/profile" class="btn btn-link">
+                <img src="{{ current_user.avatar(32) }}" class="clickable" data-href="{{ url_for('profile') }}"/>
+                <a href="{{ url_for('profile') }}" class="btn btn-link">
                     {{ current_user.data.fullname }}</a>
-                <a href="/logout" class="btn btn-link">Sign out</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-link">Sign out</a>
                 {% else %}
-                <a href="/login" class="btn btn-link">Sign in</a>
+                <a href="{{ url_for('login') }}" class="btn btn-link">Sign in</a>
                 {% endif %}
             </section>
         </header>
         </div>
-        <div class="show-sm">
+        <div class="show-md">
         <header class="navbar">
             <section class="navbar-section">
                 <a href="{{ url_for('index') }}" class="navbar-brand">
@@ -90,7 +90,7 @@
             {% if request.url_rule.endpoint in item.endpoints %}
                 {% set active = 'active' %}
             {% endif %}
-            <li class="nav-item">
+            <li class="nav-item clickable" data-href="{{ url_for(item.endpoints[0]) }}">
             <a href="{{ url_for(item.endpoints[0]) }}" class="btn btn-link {{ active }}">
                 {{ item.title }}
             </a>
@@ -99,12 +99,12 @@
             </ul>
             <section class="mobile-menu-profile">
                 {% if current_user.is_authenticated %}
-                    <img src="{{ current_user.avatar(24) }}" />
-                <a href="/profile" class="btn btn-link">
+                    <img src="{{ current_user.avatar(32) }}" class="clickable" data-href="{{ url_for('profile') }}"/>
+                <a href="{{ url_for('profile') }}" class="btn btn-link">
                     {{ current_user.data.fullname }}</a>
-                <a href="/logout" class="btn btn-link">Sign out</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-link">Sign out</a>
                 {% else %}
-                <a href="/login" class="btn btn-link">Sign in</a>
+                <a href="{{ url_for('login') }}" class="btn btn-link">Sign in</a>
                 {% endif %}
             </section>
             </header>
