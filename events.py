@@ -128,7 +128,8 @@ def edit_event(post=None, action=None):
             if post is None:
                 item = new_folder_item('data/events', data['seminar'], 'myevent.md') 
                 item['username'] = current_user.get_id()
-                item['date_created'] = item['date_modified'] = datetime_now()
+                item['date_modified'] = datetime_now()
+                item['date_created'] = item['date_modified']
             else:
                 item['date_modified'] = datetime_now()
                 item['attachments'] = json.loads(data['attachments'])
