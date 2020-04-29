@@ -4,7 +4,7 @@
         {{ item.date.strftime(site.news.dateformat) }}
     </time>
 </span>
-{% set username = item.username | default(item.taxonomy.author[0]) %}
+{% set username = item.username %}
 {% if username %}
     <span class='post-author'>by {{ username | user_fullname }}</span>
 {% endif %}
