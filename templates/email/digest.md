@@ -1,3 +1,5 @@
+Subject: Weekly digest from GRT at home
+
 {% set tz = user.data.timezone %}
 {% if not tz %}
 {% set tz = "UTC" %}

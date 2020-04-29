@@ -1,6 +1,9 @@
+Subject: Reset your password on GRT at home
+
 Dear {{ user.data.fullname }},
 
-someone (probably you) has requested to change the password for your account `{{ user.data.username }}` on grt-home.org.
+someone (probably you) has requested to change the 
+password for your account `{{ user.data.username }}` on grt-home.org.
 To change your password please follow the link below:
 
 <{{ link }}>

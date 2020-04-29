@@ -11,7 +11,6 @@ from wtforms.widgets import html_params
 from flask_login import LoginManager, UserMixin, current_user, \
         login_user, logout_user, login_required
 
-from flask_mail import Message
 
 import yaml
 
@@ -23,10 +22,8 @@ from hashlib import md5
 
 import secrets
 
-from html2text import HTML2Text
+import emails
 
-text_maker = HTML2Text()
-text_maker.ignore_links = True
 
 class MyUser(UserMixin):
     def __init__(self, id, data):
@@ -47,29 +44,23 @@ class MyUser(UserMixin):
     def set_password(self, new_password):
         self.data['hashed_password'] = bcrypt.generate_password_hash(new_password)
 
+    def send_email(self, msg):
+        recipients = [(self.data['fullname'], self.data['email'])]
+        emails.send_email(msg, None, recipients)
+
     def send_activation_email(self):
         token = secrets.token_urlsafe(16)
         self.data['activation_token'] = token
-        msg = Message(config['activation_email']['subject'])
-        msg.recipients = [(self.data['fullname'], self.data['email'])]
-        msg.sender = config['activation_email']['from']
         link = url_for('activate_user', username=self.get_id(), token=token, _external=True)
-        msg_md = render_template('activation-email.md', link=link, user=self)
-        msg.html = render_template_string('{{ md | markdown }}', md=msg_md)
-        msg.body = text_maker.handle(msg.html)
-        mail.send(msg)
+        msg_md = render_template('email/activation.md', link=link, user=self)
+        self.send_email(msg_md)
     
     def send_reset_email(self):
         token = secrets.token_urlsafe(16)
         self.data['reset_token'] = token
-        msg = Message(config['reset_email']['subject'])
-        msg.recipients = [(self.data['fullname'], self.data['email'])]
-        msg.sender = config['reset_email']['from']
         link = url_for('reset_password', username=self.get_id(), token=token, _external=True)
-        msg_md = render_template('reset-email.md', link=link, user=self)
-        msg.html = render_template_string('{{ md | markdown }}', md=msg_md)
-        msg.body = text_maker.handle(msg.html)
-        mail.send(msg)
+        msg_md = render_template('email/reset.md', link=link, user=self)
+        self.send_email(msg_md)
 
     def activate(self, token):
         if token and self.data.get('activation_token') == token:

@@ -1,3 +1,5 @@
+Subject: Activate your account on GRT at home
+
 Dear {{ user.data.fullname }},
 
 someone (probably you) has created an account `{{ user.data.username }}` on grt-home.org.
