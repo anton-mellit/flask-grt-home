@@ -62,6 +62,10 @@ class MyUser(UserMixin):
         msg_md = render_template('email/reset.md', link=link, user=self)
         self.send_email(msg_md)
 
+    def send_new_user_email(self):
+        msg_md = render_template('email/new-user.md', user=self)
+        emails.send_email(msg_md)
+    
     def activate(self, token):
         if token and self.data.get('activation_token') == token:
             self.data['state'] = 'enabled'
@@ -282,6 +286,7 @@ def register():
             user.set_password(form.password.data)
             user.data['state'] = 'disabled'
             user.send_activation_email()
+            user.send_new_user_email()
             save_user(user)
             flash('Your registration has been successful. An activation email with instructions \
                     has been send to the address %s. Please follow the instructions to activate \

@@ -18,7 +18,7 @@ def send_email(body_md, sender=None, recipients=None):
     if not sender:
         sender = default_sender
     if not recipients:
-        recipients = default_recipient
+        recipients = [default_recipient]
     msg = Message(subject)
     msg.recipients = recipients
     msg.sender = sender
