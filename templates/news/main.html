@@ -1,34 +1,17 @@
-{% extends "body.html" %}
+{% extends "default.html" %}
 
 
 {% block title %}News | {{ site.title }}{% endblock %}
 
-{% block content %}
-
-
-<div class="container">
+{% block hero %}
 <div class="hero hero-xs">
     <div class="hero-body">
         {{ site.hero | markdown }}
     </div>
 </div>
-
-<div class="columns">
-
-    <section class="column col-9 col-sm-12">
-        {% block news_content %} 
-        {% include "news/list.html" %}
-        {% endblock %}
-    </section>
-
-    <section class="column col-3 col-sm-12">
-        {% block news_sidebar %}
-        {% include "sidebar.html" %}
-        {% endblock %}
-    </section>
-
-</div>
-
-</div>
-
 {% endblock %}
+
+{% block page_content %} 
+{% include "news/list.html" %}
+{% endblock %}
+
