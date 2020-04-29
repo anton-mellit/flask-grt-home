@@ -231,6 +231,13 @@ def logout():
 def profile():
     if request.method=='GET':
         form = ProfileForm(data=current_user.data)
+        if not current_user.data.get('timezone') and \
+                current_user.data.get('digest_allowed'):
+                    flash('''
+    Your timezone has not been stored in the system. To store your 
+    timezone, make sure it has been correctly determined below and press 
+    "Submit" below. This is necessary for setting correct times in 
+    the digest. Otherwise the digest will show all times in UTC.''', 'warning')
     else:
         form = ProfileForm()
         if form.validate_on_submit():
