@@ -102,13 +102,17 @@ def load_user(user_id):
         return None
 
 def find_user_by_email(email):
+    for user in all_users():
+        if user.data['email'] == email:
+            return user
+    return None
+
+def all_users():
     for path in (BASE_PATH / 'data/accounts').iterdir():
         if path.suffix=='.yaml':
             username = path.name[:-5]
             user = load_user(username)
-            if user.data['email'] == email:
-                return user
-    return None
+            yield user
 
 def flash_errors(form):
     for field, errors in form.errors.items():

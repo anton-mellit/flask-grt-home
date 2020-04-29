@@ -7,8 +7,8 @@ from html2text import HTML2Text
 text_maker = HTML2Text()
 text_maker.ignore_links = True
 
-default_sender = config['email']['default_sender']
-default_recipient = config['email']['default_recipient']
+default_sender = tuple(config['email']['default_sender'])
+default_recipient = tuple(config['email']['default_recipient'])
 
 def send_email(body_md, sender=None, recipients=None):
     body_md = body_md.strip()
