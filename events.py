@@ -28,16 +28,6 @@ def secure_filename(s):
         s = 'x'
     return s
 
-print(secure_filename('')+'_')
-print(secure_filename('.')+'_')
-print(secure_filename('..')+'_')
-print(secure_filename('...')+'_')
-print(secure_filename('.abc.def.pdf')+'_')
-print(secure_filename('abc.def.pdf')+'_')
-print(secure_filename('def.pdf')+'_')
-print(secure_filename('.pdf')+'_')
-
-
 
 def datetime_now():
     return datetime.now(timezone.utc)
@@ -138,7 +128,7 @@ def edit_event(post=None, action=None):
             if post is None:
                 item = new_folder_item('data/events', data['seminar'], 'myevent.md') 
                 item['username'] = current_user.get_id()
-                item['date_created'] = datetime_now()
+                item['date_created'] = item['date_modified'] = datetime_now()
             else:
                 item['date_modified'] = datetime_now()
                 item['attachments'] = json.loads(data['attachments'])
