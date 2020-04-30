@@ -3,4 +3,5 @@
 /config.yaml
 /data
 /logs
+/backup
 **/*~
