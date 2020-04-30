@@ -5,11 +5,14 @@ import emails
 
 def send_digest():
     for user in users.all_users():
-        if user.is_active and user.data.get('digest_allowed'):
-            digest = flask.render_template('email/digest.md', user=user)
-            print('Sending to user %s' % (user.get_id(),))
-            print(digest)
-            user.send_email(digest)
+        try:
+            if user.is_active and user.data.get('digest_allowed'):
+                digest = flask.render_template('email/digest.md', user=user)
+                print('Sending to user %s' % (user.get_id(),))
+                user.send_email(digest)
+        except Exception as e:
+            print('Error:', e)
+
 
 
 
