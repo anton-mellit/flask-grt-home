@@ -127,7 +127,7 @@ text_maker.ignore_links = True
 @app.route('/test-digest')
 @login_required
 def test_digest():
-    msg_md = render_template('digest.md', user=current_user)
+    msg_md = render_template('email/digest.md', user=current_user)
     html = render_template_string('{{ md | markdown }}', md=msg_md)
     body = text_maker.handle(html)
     return html + '<h1>Plain text:</h1><pre><code>' + body + '</code></pre>'
