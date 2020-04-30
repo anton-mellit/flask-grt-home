@@ -2,6 +2,7 @@ import flask
 import run
 import users
 import emails
+import traceback
 
 def send_digest():
     for user in users.all_users():
@@ -10,8 +11,8 @@ def send_digest():
                 digest = flask.render_template('email/digest.md', user=user)
                 print('Sending to user %s' % (user.get_id(),))
                 user.send_email(digest)
-        except Exception as e:
-            print('Error:', e)
+        except Exception:
+            print(traceback.format_exc())
 
 
 
