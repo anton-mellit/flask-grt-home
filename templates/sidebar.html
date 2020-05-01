@@ -5,7 +5,7 @@
 {% for item in events %}
 
 <p>
-<strong><time class="date-time-long" datetime="{{ item.date }}"></time></strong>
+<strong><time class="date-time-long" datetime="{{ item.date.isoformat() }}"></time></strong>
     {% if item.seminar %}
     {{ item.seminar }}
     {% endif %}
