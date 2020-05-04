@@ -14,11 +14,13 @@ The website is designed with the idea to keep it simple and easily extendable. T
 Please send any bug reports and technical requests to *anton dot mellit at univie dot ac dot at*.
 
 ## Steering committee
+ * Andrea Appel, University of Parma
  * Sasha Braverman, University of Toronto
  * Eugene Gorsky, University of California, Davis
  * David Jordan, University of Edinburgh
  * Bernhard Keller, University of Paris
  * Anton Mellit, University of Vienna
+ * Francesco Sala, University of Pisa
  * Olivier Schiffmann, Université de Paris-Sud ORSAY
  * Paul Wedrich, MSRI and MPIM Bonn
  
@@ -63,20 +65,17 @@ and
 `output.txt`
 ```
 become
-
 ```
 print 'Hello World'
 ```
-
 and `output.txt`. Watch out, these signs are backticks, not quotes!
 
 ### Lists
-
-```      
+```
  * item 1
  * item 2
 ```
-become 
+become
 
  * item 1
  * item 2
