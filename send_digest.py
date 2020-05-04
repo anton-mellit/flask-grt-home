@@ -15,8 +15,6 @@ def send_digest():
             print(traceback.format_exc())
 
 
-
-
 if __name__ == '__main__':
     with run.app.app_context():
         print('Sending digest')

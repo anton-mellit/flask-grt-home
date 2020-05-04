@@ -89,13 +89,13 @@ $(document).ready(function($) {
     $(".clickable").click(function() {
         window.document.location = $(this).data("href");
     });
-    
+
     $(".date-time-long").each(function() {
         var time_str = this.dateTime;
         var d = new Date(time_str);
-        var d_str = d.toLocaleString(undefined, { 
-            weekday: 'short', month: 'short', 
-            day: 'numeric', hour: '2-digit', 
+        var d_str = d.toLocaleString(undefined, {
+            weekday: 'short', month: 'short',
+            day: 'numeric', hour: '2-digit',
             minute: '2-digit', hour12: false});
         var dif = d-new Date();
         if (dif<2*24*60*60*1000 && -dif<2*24*60*60*1000) {
@@ -103,6 +103,7 @@ $(document).ready(function($) {
         }
 
         $(this).text(d_str);
+        return true;
     });
 
 	$(".md-editor").each(function(){
@@ -118,7 +119,8 @@ $(document).ready(function($) {
 				"preview", "guide"
 			]
 		});
-	});    
+        return true;
+	});
     $( ".dropzone" ).each(function() {
         var paramsVal = { csrf_token: $(this).attr("csrf-token") };
         var param = $(this).attr("name");
@@ -150,6 +152,7 @@ $(document).ready(function($) {
             console.log(JSON.stringify(res));
             $( "#"+param ).val(JSON.stringify(res));
         });
+
+        return true;
     });
 });
-
