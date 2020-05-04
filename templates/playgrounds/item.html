@@ -1,0 +1,43 @@
+{% extends 'body.html' %}
+
+{% block assets %}
+{{ super() }}
+<script src="{{ url_for('static', filename='playgrounds.js') }}"></script>
+{% endblock %}
+
+{% if item.chunks %}
+{% set title = item.chunks[0].content | markdown | striptags | trim %}
+{% else %}
+{% set title = "Playground" %}
+{% endif %}
+
+{% block title %}{{ title }} | {{ site.title }}{% endblock %}
+
+{% block content %}
+
+<div id="playground">
+
+    {% for chunk in item.chunks %}
+    <div class="playground-chunk-container" id="{{ chunk.id }}">
+        <div class="playground-chunk">
+          {{ chunk.content | markdown }}
+        </div>
+        <textarea class="playground-chunk-textarea invisible">{{ chunk.content }}</textarea>
+    </div>
+    {% endfor %}
+
+</div>
+
+<div id="playground-new-chunk" class="invisible">
+    <div class="playground-chunk-container">
+    <div class="playground-chunk">
+    </div>
+    <textarea class="playground-chunk-textarea invisible"></textarea>
+    </div>
+</div>
+
+<div class="invisible" id="ajax-update"
+    csrf-token="{{ csrf_token() }}"
+    url="{{ url_for('playgrounds_update', post=item.slug, username=current_user.get_id()) }}" />
+
+{% endblock %}

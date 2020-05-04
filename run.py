@@ -34,7 +34,7 @@ mail = Mail(app)
 
 from flaskext.markdown import Markdown
 
-markdown = Markdown(app, extensions=['extra', 'mdx_math'], 
+markdown = Markdown(app, extensions=['extra', 'mdx_math'],
         extension_configs={'mdx_math': {'enable_dollar_delimiter': True}})
 
 from bleach import clean as bleach_clean
@@ -77,6 +77,7 @@ def format_date_ical(dt):
 import users
 import pages
 import events
+import playgrounds
 
 from datetime import datetime, timedelta, timezone
 
@@ -142,4 +143,3 @@ for f in (BASE_PATH / 'pages').iterdir():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5555)
-

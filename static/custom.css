@@ -130,8 +130,7 @@ section.section {
 }
 
 .invisible {
-    position: fixed;
-    visibility: hidden;
+    display: none;
 }
 
 .mobile-menu {
@@ -196,4 +195,33 @@ body {
 pre code{
     white-space:pre;
     padding:0 0 0 0;
+}
+
+.playground-item-title{
+  border: 1px solid white;
+}
+.playground-item-title:hover{
+  border: 1px solid #BBD7F9;
+}
+.playground-chunk-container{
+  border: 1px solid white;
+  padding: 0.5rem;
+}
+.playground-chunk-container:hover{
+  border: 1px solid #BBD7F9;
+  padding: 0.5rem;
+}
+.CodeMirror, .CodeMirror-scroll {
+  min-height: 1.4rem;
+}
+
+
+/* from loading.io/css/ */
+
+.playground-overlay {
+    display: none;
+}
+
+.playground-chunk-container.loading {
+    color: #3b435140!important;
 }
