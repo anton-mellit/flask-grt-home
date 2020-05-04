@@ -5,6 +5,7 @@
         <title>{% block title %}{{ site.title }}{% endblock %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content="{{ site.description }}" />
+        {% block assets %}
         <link rel="stylesheet" href="{{ url_for('static', filename='spectre.min.css') }}"/>
         <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome.min.css') }}"/>
         <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}"/>
@@ -29,6 +30,7 @@
         <!-- custom -->
         <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}"/>
         <script src="{{ url_for('static', filename='custom.js') }}"></script>
+        {% endblock %}
     </head>
     <body class="language-text">
         <div class="hide-md">
@@ -80,7 +82,7 @@
             <a href="{{ url_for('index') }}" class="nav-brand">
                 {{ site.title }}
             </a>
-            
+
             <a href="javascript:document.getElementById('mobile-menu-container').classList.remove('open');" class="mobile-menu-close">
                 <i class="fa fa-2x fa-close"></i>
             </a>
@@ -128,4 +130,3 @@
         </main>
     </body>
 </html>
-
