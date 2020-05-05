@@ -32,6 +32,7 @@ def secure_filename(s):
 def datetime_now():
     return datetime.now(timezone.utc)
 
+@app.route('/online-seminars/<post>/')
 @app.route('/event/<post>/')
 def events_item(post):
     item = load_folder_item('data/events', post, 'myevent.md')
@@ -39,6 +40,7 @@ def events_item(post):
         abort(404)
     return render_template('events/item.html', item=item)
 
+@app.route('/online-seminars/<post>/<fname>')
 @app.route('/event/<post>/<fname>')
 def events_item_file(post, fname):
     path = load_folder_item_file('data/events', post, secure_filename(fname), 'myevent.md')
@@ -47,8 +49,8 @@ def events_item_file(post, fname):
     return send_file(path)
 
 duration_choices = list({ 'unknown': 'unknown',
+'30': '30 minutes',
                 '15': '15 minutes',
-                '30': '30 minutes',
                 '45': '45 minutes',
                 '60': '1 hour',
                 '75': '1 hour 15 minutes',
@@ -126,7 +128,7 @@ def edit_event(post=None, action=None):
         if form.validate_on_submit():
             data = form.data
             if post is None:
-                item = new_folder_item('data/events', data['seminar'], 'myevent.md') 
+                item = new_folder_item('data/events', data['seminar'], 'myevent.md')
                 item['username'] = current_user.get_id()
                 item['date_modified'] = datetime_now()
                 item['date_created'] = item['date_modified']
@@ -144,7 +146,7 @@ def edit_event(post=None, action=None):
             item.content = data['content']
             timezone = tz.gettz(data['entered_timezone'])
             item['date'] = datetime.strptime('%s %s' % \
-                    (data['entered_date'], data['entered_time']), 
+                    (data['entered_date'], data['entered_time']),
                     '%Y-%m-%d %H:%M').replace(tzinfo=timezone)
 
             save_folder_item('data/events', 'myevent.md', item)
@@ -163,4 +165,3 @@ def edit_event_action(post, action):
         for f in request.files.values():
             save_folder_item_file('data/events', post, secure_filename(f.filename), 'myevent.md', f)
     return 'OK'
-
