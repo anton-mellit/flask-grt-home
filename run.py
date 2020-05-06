@@ -37,6 +37,11 @@ from flaskext.markdown import Markdown
 markdown = Markdown(app, extensions=['extra', 'mdx_math'],
         extension_configs={'mdx_math': {'enable_dollar_delimiter': True}})
 
+from search import Search
+
+search = Search(app)
+
+
 from bleach import clean as bleach_clean
 from bleach.sanitizer import ALLOWED_TAGS
 @app.template_filter()
@@ -133,13 +138,19 @@ def test_digest():
     body = text_maker.handle(html)
     return html + '<h1>Plain text:</h1><pre><code>' + body + '</code></pre>'
 
+@app.route('/search')
+def do_search():
+    query = request.args.get('q', '')
+    page = int(request.args.get('p', '0'))
+    return search.search(query, page)
+
+
 for f in (BASE_PATH / 'pages').iterdir():
     if f.suffix=='.md':
         def page_route():
             page = pages.load_file(f, f.stem)
             return render_template('default.html', page=page)
         app.add_url_rule('/'+f.stem, f.stem, page_route)
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5555)

@@ -1,0 +1,62 @@
+{% extends "default.html" %}
+
+{% block title %}Search results | {{ site.title }}{% endblock %}
+
+{% block hero %}
+{% endblock %}
+
+{% block page_content %}
+<h1>Search results:</h1>
+
+{% set total = results.results.estimated_length() %}
+
+<p> Total found: {{ results.results.estimated_length() }}{% if total %}, showing:
+    {{ results.offset+1 }}-{{ results.offset + results.pagelen }}{% endif %} </p>
+
+    <table class="table table-striped table-hover">
+        <thead></thead>
+        <tbody>
+{% for hit in results %}
+<tr class="clickable" data-href="{{ hit.url }}"><td>
+    {% if hit.title and not hit.seminar %}
+    {{ hit.title }}
+    {% endif %}
+
+    {% if hit.talk_speaker %}
+    <strong>{{hit.talk_speaker}}</strong>
+    {% endif %}
+
+    {% if hit.talk_title %}
+    <em>{{ hit.talk_title }}</em>
+    {% endif %}
+
+    {% if hit.date %}
+    <time datetime={{ hit.date.isoformat() }}></time>
+    {% endif %}
+
+    {% if hit.seminar %}
+    {{hit.seminar}}
+    {% endif %}
+
+    {#}{{ hit.highlights('content') | safe}}#}
+</td></tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% if page>0 or not results.is_last_page() %}
+<ul class="pagination">
+    <li class="page-item {% if page==0 %}disabled{% endif %}">
+       <a href="{% if page==0 %}#{% else %}{{
+           url_for_self(q=query, p=page-1) }}{% endif %}">Prev</a>
+    </li>
+
+    <li class="page-item {% if results.is_last_page() %}disabled{% endif %}">
+       <a href="{% if results.is_last_page() %}#{% else %}{{
+           url_for_self(q=query, p=page+1) }}{% endif %}">Next</a>
+    </li>
+</ul>
+
+{% endif %}
+
+{% endblock %}
