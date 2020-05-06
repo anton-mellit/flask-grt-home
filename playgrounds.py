@@ -5,7 +5,7 @@ from flask import request, render_template, flash, redirect, url_for, \
 
 from flask_login import current_user, login_required
 
-from events import load_folder_item, save_folder_item
+from pages import PageFolder
 import json
 
 @app.route('/playgrounds/<post>/')

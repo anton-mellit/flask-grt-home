@@ -29,18 +29,17 @@ from flask_bcrypt import Bcrypt
 bcrypt = Bcrypt(app)
 
 from flask_mail import Mail
-
 mail = Mail(app)
 
-from flaskext.markdown import Markdown
+from flask_redis import FlaskRedis
+redis = FlaskRedis(app)
 
+from flaskext.markdown import Markdown
 markdown = Markdown(app, extensions=['extra', 'mdx_math'],
         extension_configs={'mdx_math': {'enable_dollar_delimiter': True}})
 
 from search import Search
-
 search = Search(app)
-
 
 from bleach import clean as bleach_clean
 from bleach.sanitizer import ALLOWED_TAGS
@@ -96,13 +95,6 @@ app.jinja_env.globals['url_for_self'] = url_for_self
 @app.route('/news')
 def news():
     return render_template('news/main.html', page=request.args.get('page'))
-
-@app.route('/news/<post>')
-def news_item(post):
-    item = pages.load_folder_item('data/news', post, 'item.md')
-    if not item:
-        abort(404)
-    return render_template('news/item.html', item=item)
 
 app.add_url_rule('/', 'index', news)
 

@@ -42,6 +42,8 @@ class Search:
             doc['url'] = url
             content.append(item.content)
             doc['content'] = ' '.join(content)
+            print(item.metadata)
+            print(doc)
             writer.update_document(**doc)
 
     def reindex(self):

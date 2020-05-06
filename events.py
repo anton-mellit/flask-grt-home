@@ -1,55 +1,24 @@
 from run import app, config
 
-from flask import request, render_template, flash, redirect, url_for, send_file
-
-from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, \
         SubmitField, SelectField, TextAreaField, \
         MultipleFileField
 from wtforms.validators import DataRequired, Regexp
 from wtforms.fields.html5 import DateField, TimeField
 
-from flask_login import current_user, login_required
+from flask_login import login_required
 
-from users import timezone_widget, timezone_choices, flash_errors
-from pages import load_folder_item, load_folder_item_file, \
-        new_folder_item, save_folder_item, save_folder_item_file
+from users import timezone_widget, timezone_choices
+from pages import EditPageForm, EditAttachmentsMixin
 
 from datetime import datetime, timezone
 from dateutil import tz
 
-import json
-
-from werkzeug.utils import secure_filename as w_secure_filename
-
-def secure_filename(s):
-    s = w_secure_filename(s)
-    if not s:
-        s = 'x'
-    return s
 
 
-def datetime_now():
-    return datetime.now(timezone.utc)
-
-@app.route('/online-seminars/<post>/')
-@app.route('/event/<post>/')
-def events_item(post):
-    item = load_folder_item('data/events', post, 'myevent.md')
-    if not item:
-        abort(404)
-    return render_template('events/item.html', item=item)
-
-@app.route('/online-seminars/<post>/<fname>')
-@app.route('/event/<post>/<fname>')
-def events_item_file(post, fname):
-    path = load_folder_item_file('data/events', post, secure_filename(fname), 'myevent.md')
-    if not path:
-        abort(404)
-    return send_file(path)
 
 duration_choices = list({ 'unknown': 'unknown',
-'30': '30 minutes',
+                '30': '30 minutes',
                 '15': '15 minutes',
                 '45': '45 minutes',
                 '60': '1 hour',
@@ -61,13 +30,10 @@ duration_choices = list({ 'unknown': 'unknown',
                 '360': '6 hours',
 }.items())
 
-class DropzoneField(StringField):
-    def __init__(self, title, options={}, **kw):
-        super(StringField, self).__init__(title, **kw)
-        self.options = options
 
-class EventForm(FlaskForm):
+class EventForm(EditPageForm):
     title = 'New event'
+    slug_field = 'seminar'
     outer_class = 'large-form-container'
     layout = config['site']['layouts']['edit_event']
     seminar = StringField('Seminar, institution', validators=[DataRequired()])
@@ -84,84 +50,26 @@ class EventForm(FlaskForm):
     allow_comments = BooleanField('Allow registered users to leave comments?', default=True)
     submit = SubmitField('Save')
 
-class EventFormAttachments(EventForm):
+    def __init__(self):
+        super().__init__('events')
+
+    def populate_page(self, page, is_new):
+        super().populate_page(page, is_new)
+        timezone = tz.gettz(self.entered_timezone.data)
+        page['date'] = datetime.strptime('%s %s' % \
+                (self.entered_date.data, self.entered_time.data),
+                '%Y-%m-%d %H:%M').replace(tzinfo=timezone)
+
+class EventFormAttachments(EventForm, EditAttachmentsMixin):
     title = 'Edit event'
-    attachments = DropzoneField('Upload attachments here')
+
 
 
 @app.route('/edit-event/<post>', methods=['GET', 'POST'])
 @app.route('/edit-event', methods=['GET', 'POST'])
 @login_required
-def edit_event(post=None, action=None):
-    print(request.args)
-    print(request.form)
-    print(request.files)
+def edit_event(post=None):
     if post is not None:
-        item = load_folder_item('data/events', post, 'myevent.md')
-        if not item:
-            flash('You are not authorized to edit this page', 'error')
-            return redirect(url_for('events_item', post=post))
-        if item['username']!=current_user.get_id():
-            flash('You are not authorized to edit this page', 'error')
-            return redirect(url_for('events_item', post=post))
-    action = request.args.get('_action')
-    if action:
-        return edit_event_action(post, action)
-    elif request.method=='GET':
-        if post is not None:
-            form = EventFormAttachments(data=item.metadata)
-            form.content.data = item.content
-            if 'attachments' in item.metadata:
-                attachments = list(item['attachments'])
-            else:
-                attachments = []
-            for att in attachments:
-                att['url'] = url_for('events_item_file', post=post, fname=att['name'])
-            form.attachments.data = json.dumps(attachments)
-        else:
-            form = EventForm()
+        return EventFormAttachments().process_request(post)
     else:
-        if post is not None:
-            form = EventFormAttachments()
-        else:
-            form = EventForm()
-        if form.validate_on_submit():
-            data = form.data
-            if post is None:
-                item = new_folder_item('data/events', data['seminar'], 'myevent.md')
-                item['username'] = current_user.get_id()
-                item['date_modified'] = datetime_now()
-                item['date_created'] = item['date_modified']
-            else:
-                item['date_modified'] = datetime_now()
-                item['attachments'] = json.loads(data['attachments'])
-                for attachment in item['attachments']:
-                    attachment['name'] = secure_filename(attachment['name'])
-
-            for key in ['seminar', 'entered_date', 'entered_time', 'entered_timezone',
-                    'duration', 'talk_speaker', 'talk_title', 'online_access', 'online_secret',
-                    'allow_comments']:
-                if key in data:
-                    item[key] = data[key]
-            item.content = data['content']
-            timezone = tz.gettz(data['entered_timezone'])
-            item['date'] = datetime.strptime('%s %s' % \
-                    (data['entered_date'], data['entered_time']),
-                    '%Y-%m-%d %H:%M').replace(tzinfo=timezone)
-
-            save_folder_item('data/events', 'myevent.md', item)
-            if post:
-                flash('Your chages have been saved.', 'success')
-            else:
-                flash('Event has been created.', 'success')
-            #except e:
-            #    flash('Errors occured. Event could not be saved.', 'error')
-            return redirect(url_for('events_item', post=item['slug']))
-    flash_errors(form)
-    return render_template('medium-form.html', form=form)
-
-def edit_event_action(post, action):
-    if action=='upload' and post:
-        for f in request.files.values():
-            save_folder_item_file('data/events', post, secure_filename(f.filename), 'myevent.md', f)
-    return 'OK'
+        return EventForm().process_request(post)
