@@ -10,7 +10,7 @@ from pages import PageCollection
 
 from whoosh.qparser import QueryParser
 
-schema = Schema(url=ID(stored=True), date=DATETIME(stored=True),
+schema = Schema(url=ID(stored=True, unique=True), date=DATETIME(stored=True),
     seminar=TEXT(stored=True), talk_speaker=TEXT(stored=True),
     title=TEXT(stored=True), talk_title=TEXT(stored=True), content=TEXT(stored=True))
 
@@ -42,7 +42,7 @@ class Search:
             doc['url'] = url
             content.append(item.content)
             doc['content'] = ' '.join(content)
-            writer.add_document(**doc)
+            writer.update_document(**doc)
 
     def reindex(self):
         for key, params in self.config['collections'].items():
