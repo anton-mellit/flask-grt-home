@@ -30,7 +30,7 @@ class MyUser(UserMixin):
         self.data = data.copy()
         self.id = id
         self.data['username'] = id
-    
+
     @property
     def is_active(self):
         return self.data['state'] == 'enabled'
@@ -54,7 +54,7 @@ class MyUser(UserMixin):
         link = url_for('activate_user', username=self.get_id(), token=token, _external=True)
         msg_md = render_template('email/activation.md', link=link, user=self)
         self.send_email(msg_md)
-    
+
     def send_reset_email(self):
         token = secrets.token_urlsafe(16)
         self.data['reset_token'] = token
@@ -65,7 +65,7 @@ class MyUser(UserMixin):
     def send_new_user_email(self):
         msg_md = render_template('email/new-user.md', user=self)
         emails.send_email(msg_md)
-    
+
     def activate(self, token):
         if token and self.data.get('activation_token') == token:
             self.data['state'] = 'enabled'
@@ -106,6 +106,13 @@ def find_user_by_email(email):
         if user.data['email'] == email:
             return user
     return None
+
+def load_user_or_email(username):
+    user = load_user(username)
+    if not user:
+        user = find_user_by_email(username)
+    return user
+
 
 def all_users():
     for path in (BASE_PATH / 'data/accounts').iterdir():
@@ -161,7 +168,7 @@ class ProfileForm(FlaskForm):
 
 class RegisterForm(ProfileForm):
     title = 'Registration'
-    username = StringField('Username', validators=[DataRequired(), 
+    username = StringField('Username', validators=[DataRequired(),
         Regexp(config['username_regexp'], 0, 'Username can only contain lowercase letters, \
                 numbers and symbols ._-. Username must be at least 3 characters long.')])
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -204,7 +211,7 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = load_user(form.username.data)
+        user = load_user_or_email(form.username.data)
         if user and user.check_password(form.password.data):
             if user.is_active:
                 login_user(user, remember = form.remember_me.data)
@@ -233,9 +240,9 @@ def profile():
         if not current_user.data.get('timezone') and \
                 current_user.data.get('digest_allowed'):
                     flash('''
-    Your timezone has not been stored in the system. To store your 
-    timezone, make sure it has been correctly determined below and press 
-    "Submit" below. This is necessary for setting correct times in 
+    Your timezone has not been stored in the system. To store your
+    timezone, make sure it has been correctly determined below and press
+    "Submit" below. This is necessary for setting correct times in
     the digest. Otherwise the digest will show all times in UTC.''', 'warning')
     else:
         form = ProfileForm()
@@ -266,7 +273,7 @@ def profile():
     form.username.data = current_user.get_id()
     flash_errors(form)
     return render_template('profile.html', form=form)
-    
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -304,7 +311,7 @@ def register():
 def activate_user(username=None, token=None):
     form = ActivateUserForm()
     if form.validate_on_submit():
-        user = load_user(form.username.data)
+        user = load_user_or_email(form.username.data)
         token = form.token.data
         if user and token and user.activate(token):
             save_user(user)
@@ -351,7 +358,7 @@ def reset_password(username=None, token=None):
         return redirect(url_for('index'))
     form = PasswordResetForm()
     if form.validate_on_submit():
-        user = load_user(form.username.data)
+        user = load_user_or_email(form.username.data)
         token = form.token.data
         if user and user.allow_reset(token):
             user.set_password(form.password.data)
@@ -384,5 +391,3 @@ def user_object(username):
         user = load_user(username)
         return user
     return None
-
-
