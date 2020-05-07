@@ -23,7 +23,7 @@ def secure_filename(s):
     s = w_secure_filename(s)
     if not s:
         s = 'x'
-    return s.lower()
+    return s
 
 def load_page(path):
     with path.open() as f:
@@ -81,7 +81,7 @@ class PageFolder:
         redis[key] = pickle.dumps(page_small)
 
     def new_page(self, slug_suggestion):
-        slug0 = secure_filename(slug_suggestion)
+        slug0 = secure_filename(slug_suggestion).lower()
         for slug in itertools.chain((slug0,), \
                 (('%s-%d') % (slug0, i) for i in itertools.count(1))):
             path = BASE_PATH / self.folder / slug
