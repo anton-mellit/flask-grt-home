@@ -5,13 +5,13 @@ from flask import request, render_template, flash, redirect, url_for, \
 
 from flask_login import current_user, login_required
 
-from pages import PageFolder
+from pages import folders
 import json
 
 @app.route('/playgrounds/<post>/')
 @login_required
 def playgrounds_item(post):
-    item = load_folder_item('data/playgrounds', post, 'index.md')
+    item = folders['playgrounds'].load_page(post)
     if not item:
         abort(404)
     if current_user.get_id() not in item['usernames']:
@@ -21,7 +21,7 @@ def playgrounds_item(post):
 @app.route('/playgrounds/<post>/<username>', methods=['POST'])
 @login_required
 def playgrounds_update(post, username):
-    item = load_folder_item('data/playgrounds', post, 'index.md')
+    item = folders['playgrounds'].load_page(post)
     if not item:
         abort(404)
     if (username!=current_user.get_id()):
@@ -33,8 +33,8 @@ def playgrounds_update(post, username):
     update_chunk_id = envelope['update_chunk']
     update_content = envelope['content'].strip()
     remote_chunks = envelope['chunks']
-    print(item.metadata)
-    chunks = item.metadata['chunks']
+    print(item)
+    chunks = item['chunks']
     chunk_ids = [chunk['id'] for chunk in chunks]
     print('Chunk ids:', chunk_ids)
     if update_chunk_id not in chunk_ids:
@@ -51,6 +51,6 @@ def playgrounds_update(post, username):
     if not update_content:
         chunks.pop(j)
     html = markdown(update_content)
-    save_folder_item('data/playgrounds', 'index.md', item)
+    folders['playgrounds'].save_page(item)
 
     return jsonify({'content': html})
