@@ -11,16 +11,16 @@ Subject: Weekly digest from GRT at home
 Dear {{ user.data.fullname }},
 
 this is your weekly digest from <https://grt-home.org>.
-Your timezone is: {{ tz }}. 
+Your timezone is: {{ tz }}.
 {% if tzunset %}
 Preferred timezone for future digests can be set at <{{ url_for('profile', _external=True) }}>.
 {% endif %}
 
-{% if events.items %}
+{% if events.pages %}
 
 ## Seminars next week
 
-{% for item in events.items %}
+{% for item in events.pages %}
 
 {% if item.duration and item.duration!='unknown' %}
 **{{ item.date | format_datetime(site.digest.dateformat, tz) -}}
@@ -50,10 +50,10 @@ Preferred timezone for future digests can be set at <{{ url_for('profile', _exte
 
 {% endif %}
 
-{% if news.items %}
+{% if news.pages %}
 ## Latest news
 
-{% for item in news.items %}
+{% for item in news.pages %}
 
 **{{ item.title }}**, {{ item.date | format_datetime(site.digest.dateformat, tz) }} by {{ item.username | user_fullname }}
 
@@ -67,4 +67,3 @@ Preferred timezone for future digests can be set at <{{ url_for('profile', _exte
 Have a nice week,
 
 GRT at home (<https://grt-home.org>)
-

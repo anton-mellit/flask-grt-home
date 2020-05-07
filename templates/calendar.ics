@@ -13,7 +13,7 @@ X-WR-CALDESC:Automatically updated list of events announced on grt-home.org
 REFRESH-INTERVAL;VALUE=DURATION:PT1H
 X-PUBLISHED-TTL:PT1H
 
-{% for item in calendar().items %}
+{% for item in calendar().pages %}
 
 BEGIN:VEVENT
 UID:{{ item.slug }}@events.grt-home.org
@@ -27,7 +27,7 @@ DTSTART:{{ item.date | format_date_ical }}
 {% if item.duration and item.duration!='unknown' %}
 DTEND:{{ item.date | modify_datetime(minutes=(item.duration | int)) | format_date_ical }}
 {% endif %}
-SUMMARY: 
+SUMMARY:
     {%- if item.seminar %}
     {{- item.seminar }}
     {% endif %}
