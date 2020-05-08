@@ -64,7 +64,6 @@ class EventFormAttachments(EventForm, EditAttachmentsMixin):
     title = 'Edit event'
 
 
-
 @app.route('/edit-event/<post>', methods=['GET', 'POST'])
 @app.route('/edit-event', methods=['GET', 'POST'])
 @login_required

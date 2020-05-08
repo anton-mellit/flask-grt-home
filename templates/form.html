@@ -5,7 +5,7 @@
                     'TextAreaField': 'form-input md-editor',
                     'SubmitField': 'btn btn-primary'} %}
 
-{% set field_with_label = ['StringField', 'PasswordField', 
+{% set field_with_label = ['StringField', 'PasswordField',
             'SelectField', 'TextAreaField'] %}
 
 
@@ -13,13 +13,15 @@
     <div class="form-group">
         {{ field.label(class_='form-label') }}
         {{ field(class_='invisible') }}
-        <div class="dropzone" 
+        <div class="dropzone"
              upload-url="{{ url_for_self(_action='upload') }}"
             csrf-token="{{ csrf_token() }}"
+            store="{{ field.store }}"
             name="{{ field.name }}"
             data-options="{{ field.options | json_encode }}"
             >
         </div>
+        <input type="hidden" name="store" value="{{ field.store }}" />
     </div>
 
 {% endmacro %}
@@ -77,5 +79,3 @@
         {% endfor %}
     {% endif %}
 </form>
-
-

@@ -28,8 +28,8 @@
         <script src="{{ url_for('static', filename='prism.js') }}"></script>
 
         <!-- custom -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}"/>
-        <script src="{{ url_for('static', filename='custom.js') }}"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='custom.css', random='1' ) }}"/>
+        <script src="{{ url_for('static', filename='custom.js', random='1') }}"></script>
         {% endblock %}
     </head>
     <body class="language-text">

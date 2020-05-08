@@ -99,6 +99,15 @@ class PageFolder:
                 self.save_page_cache(page)
                 redis.delete(self.folder)
 
+    def delete_page(self, slug):
+        if slug==secure_filename(slug):
+            if (BASE_PATH / self.folder / slug).is_dir():
+                for f in (BASE_PATH / self.folder / slug).iterdir():
+                    f.unlink()
+                (BASE_PATH / self.folder / slug).rmdir()
+            if self.caching_enabled:
+                redis.delete(self.folder)
+
     def save_media(self, slug, filename, storage):
         filename = secure_filename(filename)
         if filename==self.filename:
@@ -107,6 +116,15 @@ class PageFolder:
             if not (BASE_PATH / self.folder / slug).exists():
                 (BASE_PATH / self.folder / slug).mkdir()
             storage.save(BASE_PATH / self.folder / slug / filename)
+
+    def move_media(self, slug, filename, path_from):
+        filename = secure_filename(filename)
+        if filename==self.filename:
+            filename += 'x'
+        if slug==secure_filename(slug):
+            if not (BASE_PATH / self.folder / slug).exists():
+                (BASE_PATH / self.folder / slug).mkdir()
+            path_from.replace(BASE_PATH / self.folder / slug / filename)
 
     def load_media(self, slug, filename):
         filename = secure_filename(filename)
@@ -191,19 +209,20 @@ folders = {}
 for key, params in config['site']['folders'].items():
     folder = PageFolder(params)
     folders[key] = folder
-    def render_page(post, folder=folder, template=params['template']):
-        page = folder.load_page(post)
-        if not page:
-            abort(404)
-        return render_template(template, item=page)
-    def render_media(post, fname, folder=folder):
-        path = folder.load_media(post, fname)
-        if not path:
-            abort(404)
-        return send_file(path)
-    for route in params['routes']:
-        app.add_url_rule(route+"/<post>/", key+"_item", render_page)
-        app.add_url_rule(route+"/<post>/<fname>", key+"_item_file", render_media)
+    if params['routes']:
+        def render_page(post, folder=folder, template=params['template']):
+            page = folder.load_page(post)
+            if not page:
+                abort(404)
+            return render_template(template, item=page)
+        def render_media(post, fname, folder=folder):
+            path = folder.load_media(post, fname)
+            if not path:
+                abort(404)
+            return send_file(path)
+        for route in params['routes']:
+            app.add_url_rule(route+"/<post>/", key+"_item", render_page)
+            app.add_url_rule(route+"/<post>/<fname>", key+"_item_file", render_media)
 
 
 @app.context_processor
@@ -247,9 +266,6 @@ class EditPageForm(FlaskForm):
         return folders[self.folder].new_page(self[self.slug_field].data)
 
     def populate_page(self, page, is_new):
-        if not page:
-            page = folders[self.folder].new_page(self[self.slug_field].data)
-            is_new = True
         for field in self:
             if field.name not in self.excluded_fields:
                 page[field.name] = field.data
@@ -258,18 +274,9 @@ class EditPageForm(FlaskForm):
             page['username'] = current_user.get_id()
             page['date_created'] = page['date_modified']
 
-    def process_save(self, page):
-        is_new = page is None
-        if is_new:
-            page = self.create_new_page()
+    def process_save(self, page, is_new):
         self.populate_page(page, is_new)
-
         folders[self.folder].save_page(page)
-        if is_new:
-            flash(self.MESSAGE_SUCCESS_NEW, 'success')
-        else:
-            flash(self.MESSAGE_SUCCESS_EDIT, 'success')
-        return redirect(url_for(self.folder+'_item', post=page['slug']))
 
     def process_request(self, post):
         print(request.args)
@@ -294,7 +301,15 @@ class EditPageForm(FlaskForm):
                 self.init_create()
         else:
             if self.validate_on_submit():
-                return self.process_save(page if post else None)
+                is_new = post is None
+                if is_new:
+                    page = self.create_new_page()
+                self.process_save(page, is_new)
+                if post:
+                    flash(self.MESSAGE_SUCCESS_EDIT, 'success')
+                else:
+                    flash(self.MESSAGE_SUCCESS_NEW, 'success')
+                return redirect(url_for(self.folder+'_item', post=page['slug']))
         flash_errors(self)
         return self.render()
 
@@ -304,6 +319,7 @@ class DropzoneField(StringField):
         super(StringField, self).__init__(title, **kw)
         self.options = options
 
+import uuid
 
 class EditAttachmentsMixin(EditPageForm):
     attachments = DropzoneField('Upload attachments here')
@@ -312,12 +328,29 @@ class EditAttachmentsMixin(EditPageForm):
         super().__init__(*args, **kwargs)
         self.actions['upload'] = self.upload
 
+    def redis_key(self, store):
+        return 'store-owner/'+store
+
     def upload(self, post):
-        if post:
-            for f in request.files.values():
-                folders[self.folder].save_media(post, secure_filename(f.filename), f)
-            return 'OK'
-        abort(400)
+        for f in request.files.values():
+            store = request.form.get('store')
+            print('store', store)
+            if store:
+                if redis.get(self.redis_key(store)).decode()!=current_user.get_id():
+                    abort(403)
+                folders['tmp'].save_media(store, secure_filename(f.filename), f)
+            else:
+                if post:
+                    folders[self.folder].save_media(post, secure_filename(f.filename), f)
+                else:
+                    abort(400)
+        return 'OK'
+
+    def init_create(self):
+        store = folders['tmp'].new_page(str(uuid.uuid4()))['slug']
+        self.attachments.store = store
+        self.attachments.data = json.dumps([])
+        redis.set(self.redis_key(store), current_user.get_id())
 
     def init_edit(self, page):
         super().init_edit(page)
@@ -325,9 +358,28 @@ class EditAttachmentsMixin(EditPageForm):
         for att in attachments:
             att['url'] = url_for(self.folder+'_item_file', post=page['slug'], fname=att['name'])
         self.attachments.data = json.dumps(attachments)
+        self.attachments.store = ''
 
     def populate_page(self, page, is_new):
         super().populate_page(page, is_new)
         page['attachments'] = json.loads(self.attachments.data)
-        for attachment in page['attachments']:
-            attachment['name'] = secure_filename(attachment['name'])
+
+    def process_save(self, page, is_new):
+        super().process_save(page, is_new)
+        if is_new:
+            store = request.form.get('store')
+            if secure_filename(store)!=store:
+                abort(400)
+            if not redis.get(self.redis_key(store)):
+                abort(403)
+            if redis.get(self.redis_key(store)).decode()!=current_user.get_id():
+                abort(403)
+            for att in page['attachments']:
+                original_path = folders['tmp'].load_media(store, att['name'])
+                folders[self.folder].move_media(page['slug'], att['name'], original_path)
+            folders['tmp'].delete_page(store)
+            redis.delete(self.redis_key(store))
+
+
+        #for attachment in page['attachments']:
+        #    attachment['name'] = secure_filename(attachment['name'])

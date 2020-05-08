@@ -122,7 +122,8 @@ $(document).ready(function($) {
         return true;
 	});
     $( ".dropzone" ).each(function() {
-        var paramsVal = { csrf_token: $(this).attr("csrf-token") };
+        var paramsVal = { csrf_token: $(this).attr("csrf-token"),
+                store: $(this).attr("store") };
         var param = $(this).attr("name");
         var options = {
             url: $(this).attr("upload-url"),

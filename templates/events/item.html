@@ -39,7 +39,7 @@
         {% set data = item.online_access.strip() %}
         {% set spl = data.split(' ') %}
         {% for part in spl %}
-            {% if part.startswith('http://') or 
+            {% if part.startswith('http://') or
                     part.startswith('https://') %}
                     <a href="{{ part }}" target="_blank">{{ part }}</a>
             {% else %}
@@ -48,8 +48,8 @@
         {% endfor %}
         </p>
     {% endif %}
-            
-            
+
+
 
     {% if item.online_secret %}
         <p>
@@ -58,7 +58,7 @@
             {% set data = item.online_secret.strip() %}
             {% set spl = data.split(' ') %}
             {% for part in spl %}
-                {% if part.startswith('http://') or 
+                {% if part.startswith('http://') or
                         part.startswith('https://') %}
                         <a href="{{ part }}" target="_blank">{{ part }}</a>
                 {% else %}
@@ -81,20 +81,5 @@
     {% if item.username==current_user.get_id() %}
     <button class="btn clickable" data-href="{{ url_for('edit_event', post=item.slug) }}">Edit</button>
     {% endif %}
-    
-    {#{% set show_form = grav.user.authorize('site.login') %}
 
-    {% if item.allow_comments %}
-
-    {% include 'partials/comments.html.twig' with {'page': page} %}
-
-    {% endif %}#}
 {% endblock %}
-
-
-{#{% extends 'partials/base.html.twig' %}
-
-{% block content %}
-    {{ page.content }}
-{% endblock %}
-#}

@@ -211,10 +211,13 @@ pre code{
   border: 1px solid #BBD7F9;
   padding: 0.5rem;
 }
-.CodeMirror, .CodeMirror-scroll {
+.playground-chunk-container .CodeMirror{
   min-height: 1.4rem;
 }
 
+.playground-chunk-container .CodeMirror-scroll{
+    min-height: 1.4rem;
+}
 
 /* from loading.io/css/ */
 

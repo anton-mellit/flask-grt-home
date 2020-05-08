@@ -81,6 +81,7 @@ def format_date_ical(dt):
 import users
 import pages
 import events
+import news
 import playgrounds
 
 from datetime import datetime, timedelta, timezone
