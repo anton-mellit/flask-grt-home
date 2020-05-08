@@ -141,7 +141,7 @@ def do_search():
 for f in (BASE_PATH / 'pages').iterdir():
     if f.suffix=='.md':
         def page_route():
-            page = pages.load_file(f, f.stem)
+            page = pages.load_page(f)
             return render_template('default.html', page=page)
         app.add_url_rule('/'+f.stem, f.stem, page_route)
 
