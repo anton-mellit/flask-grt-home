@@ -83,6 +83,7 @@ import pages
 import events
 import news
 import playgrounds
+import library
 
 from datetime import datetime, timedelta, timezone
 
@@ -106,6 +107,10 @@ def events(past_or_future='future'):
         abort(404)
     return render_template('events/main.html', \
             past_or_future=past_or_future, page=request.args.get('page'))
+
+@app.route('/library')
+def library():
+    return render_template('library/main.html', page=request.args.get('page'))
 
 @app.route('/favicon.ico')
 def favicon():

@@ -6,7 +6,7 @@ from whoosh.fields import *
 
 from whoosh.index import create_in, open_dir, exists_in
 
-from pages import PageCollection
+from pages import PageCollection, folders
 
 from whoosh.qparser import QueryParser
 
@@ -35,21 +35,21 @@ class Search:
             doc = {}
             content = []
             for field, field_type in schema.items():
-                if field in item.metadata:
-                    doc[field] = item.metadata[field]
+                if field in item:
+                    doc[field] = item[field]
                     if isinstance(field_type, TEXT):
                         content.append(doc[field])
             doc['url'] = url
-            content.append(item.content)
+            content.append(item['content'])
             doc['content'] = ' '.join(content)
-            print(item.metadata)
+            print(item)
             print(doc)
             writer.update_document(**doc)
 
     def reindex(self):
         for key, params in self.config['collections'].items():
-            col = PageCollection(params['folder'], params['filename'], params)
-            for item in col.items:
+            col = PageCollection(folders[params['folder']], params)
+            for item in col.pages:
                 url = url_for(params['endpoint'], post=item['slug'])
                 self.index_item(url, item)
 

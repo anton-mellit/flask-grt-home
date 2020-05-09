@@ -1,0 +1,28 @@
+{% extends 'default.html' %}
+
+{% block title %}{{ item.talk_title }} | {{ site.title }}{% endblock %}
+
+{% block hero %}{% endblock %}
+
+{% block page_content %}
+    {% if item.talk_speaker %}
+    <p>
+    <strong>{{ item.talk_speaker }}</strong>
+    </p>
+    {% endif %}
+
+    {% if item.talk_title %}
+    <p><em>{{ item.talk_title }}</em></p>
+    {% endif %}
+
+    {{ item.content|markdown }}
+
+    <p>
+    Submitted: {% include "news/author-date.html" %}
+    </p>
+
+    {% if item.username==current_user.get_id() %}
+    <button class="btn clickable" data-href="{{ url_for('edit_library', post=item.slug) }}">Edit</button>
+    {% endif %}
+
+{% endblock %}
