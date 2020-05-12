@@ -35,7 +35,7 @@ from flask_redis import FlaskRedis
 redis = FlaskRedis(app)
 
 from flaskext.markdown import Markdown
-markdown = Markdown(app, extensions=['extra', 'mdx_math'],
+markdown = Markdown(app, extensions=['extra', 'mdx_math', 'mdx_urlize'],
         extension_configs={'mdx_math': {'enable_dollar_delimiter': True}})
 
 from search import Search
