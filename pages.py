@@ -249,7 +249,7 @@ class EditPageForm(FlaskForm):
         self.actions = {}
 
     def user_can_edit(self, user, page):
-        return page['username']==user or user.data.get('editor')==True
+        return page['username']==user or load_user(user).data.get('editor')==True
 
     def init_edit(self, page):
         self.process(data=page)
