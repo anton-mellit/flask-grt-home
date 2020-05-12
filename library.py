@@ -8,6 +8,8 @@ from wtforms import StringField, BooleanField, \
         SubmitField, TextAreaField
 from wtforms.validators import DataRequired
 
+import datetime
+
 class NewLibraryForm(EditAttachmentsMixin):
     title = 'New library card'
     slug_field = 'talk_speaker'
@@ -29,6 +31,8 @@ class NewLibraryForm(EditAttachmentsMixin):
     def populate_page(self, page, is_new):
         super().populate_page(page, is_new)
         page['date'] = page['date_created']
+        if 'entered_date' in page:
+            page['entered_date'] = datetime.date.fromisoformat(page['entered_date'])
 
 class EditLibraryForm(NewLibraryForm):
     title = 'Edit library card'

@@ -21,7 +21,10 @@
     {% if item.talk_location or item.entered_date %}
     <p>
         {% if item.entered_date %}
-        {{ item.entered_date }}{% if item.talk_location %},{% endif %}
+        <time datetime="{{ item.entered_date.isoformat() }}">
+            <i class="fa fa-calendar"></i>
+            {{ item.entered_date.strftime(site.news.dateformat) }}
+        </time>
         {% endif %}
         {% if item.talk_location %}
         {{ item.talk_location }}

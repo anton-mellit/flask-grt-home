@@ -46,7 +46,9 @@
 
             <td>
             {% if item.entered_date %}
-            {{ item.entered_date }}
+            <time datetime="{{ item.entered_date.isoformat() }}">
+                {{ item.entered_date.strftime(site.news.dateformat) }}
+            </time>
             {% endif %}
             </td>
 
