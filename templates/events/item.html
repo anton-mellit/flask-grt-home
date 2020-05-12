@@ -78,7 +78,7 @@
     {{ item.username | user_fullname }}
     </p>
 
-    {% if item.username==current_user.get_id() or current_user.data.editor==true %}
+    {% if item.username==current_user.get_id() or (current_user.is_authenticated and current_user.data.editor==true) %}
     <button class="btn clickable" data-href="{{ url_for('edit_event', post=item.slug) }}">Edit</button>
     {% endif %}
 
