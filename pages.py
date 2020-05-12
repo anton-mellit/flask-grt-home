@@ -239,7 +239,7 @@ def inject_pages():
 class EditPageForm(FlaskForm):
     MESSAGE_UNAUTHORIZED = 'You are not authorized to edit this page'
     MESSAGE_SUCCESS_NEW = 'New page has been created.'
-    MESSAGE_SUCCESS_EDIT = 'Your chages have been saved.'
+    MESSAGE_SUCCESS_EDIT = 'Your changes have been saved.'
 
     excluded_fields = ['csrf_token']
 
