@@ -13,8 +13,12 @@ class NewLibraryForm(EditAttachmentsMixin):
     slug_field = 'talk_speaker'
     outer_class = 'large-form-container'
     layout = config['site']['layouts']['edit_library']
-    talk_speaker = StringField('Speaker, affiliation', validators=[DataRequired()])
+    talk_speaker = StringField('Speaker', validators=[DataRequired()])
+    speaker_affiliation = StringField('Affiliation')
     talk_title = StringField('Title', validators=[DataRequired()])
+    talk_location = StringField('Location')
+    entered_date = StringField('Date', render_kw={'type':'date'})
+    video = StringField('Video')
     content = TextAreaField('Abstract and other information')
     allow_comments = BooleanField('Allow registered users to leave comments?', default=True)
     submit = SubmitField('Save')

@@ -23,7 +23,8 @@
         <tr>
             <th>Speaker</th>
             <th>Title</th>
-            <th>Submitted</th>
+            <th>Date</th>
+            <th>Location</th>
         </tr>
     </thead>
     <tbody>
@@ -44,9 +45,16 @@
             </td>
 
             <td>
-                {% include "news/author-date.html" %}
+            {% if item.entered_date %}
+            {{ item.entered_date }}
+            {% endif %}
             </td>
 
+            <td>
+            {% if item.talk_location %}
+            {{ item.talk_location }}
+            {% endif %}
+            </td>
         </tr>
 
 {% endfor %}

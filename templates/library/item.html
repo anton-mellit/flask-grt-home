@@ -5,14 +5,32 @@
 {% block hero %}{% endblock %}
 
 {% block page_content %}
-    {% if item.talk_speaker %}
     <p>
-    <strong>{{ item.talk_speaker }}</strong>
-    </p>
+    {% if item.talk_speaker %}
+    <strong>{{ item.talk_speaker }}</strong>{% if item.speaker_affiliation %},{% endif %}
     {% endif %}
+    {% if item.speaker_affiliation %}
+    {{ item.speaker_affiliation }}
+    {% endif %}
+    </p>
 
     {% if item.talk_title %}
     <p><em>{{ item.talk_title }}</em></p>
+    {% endif %}
+
+    {% if item.talk_location or item.entered_date %}
+    <p>
+        {% if item.entered_date %}
+        {{ item.entered_date }}{% if item.talk_location %},{% endif %}
+        {% endif %}
+        {% if item.talk_location %}
+        {{ item.talk_location }}
+        {% endif %}
+    </p>
+    {% endif %}
+
+    {% if item.video %}
+    <p> Video: <a href={{ item.video }}>{{ item.video }}</a>
     {% endif %}
 
     {{ item.content|markdown }}
