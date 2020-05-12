@@ -8,7 +8,7 @@ from flask_login import current_user
 from werkzeug.utils import secure_filename as w_secure_filename
 
 import frontmatter
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 import re
 import itertools
 import json
@@ -32,6 +32,8 @@ def load_page(path):
         if key in ('date', 'date_created', 'date_modified') and \
                 isinstance(page[key], str) and page[key]:
             page[key] = datetime.fromisoformat(page[key])
+        if key == 'entered_date' and page[key]:
+            page[key] = date.fromisoformat(page[key])
     if 'username' not in page.keys():
         if 'taxonomy' in page.keys() and 'author' in page['taxonomy']:
             page['username'] = page['taxonomy']['author'][0]

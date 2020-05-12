@@ -13,7 +13,7 @@ from whoosh.qparser import QueryParser
 schema = Schema(url=ID(stored=True, unique=True), date=DATETIME(stored=True),
     seminar=TEXT(stored=True), talk_speaker=TEXT(stored=True),
     title=TEXT(stored=True), talk_title=TEXT(stored=True), talk_location=TEXT(stored=True),
-    speaker_affiliation=TEXT(stored=True),
+    speaker_affiliation=TEXT(stored=True), entered_date=DATE(stored=True),
     content=TEXT(stored=True))
 
 class Search:
