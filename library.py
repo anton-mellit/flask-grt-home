@@ -31,7 +31,7 @@ class NewLibraryForm(EditAttachmentsMixin):
     def populate_page(self, page, is_new):
         super().populate_page(page, is_new)
         page['date'] = page['date_created']
-        if 'entered_date' in page:
+        if page.get('entered_date'):
             page['entered_date'] = datetime.date.fromisoformat(page['entered_date'])
 
 class EditLibraryForm(NewLibraryForm):
