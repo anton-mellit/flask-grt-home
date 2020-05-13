@@ -32,7 +32,7 @@ def load_page(path):
         if key in ('date', 'date_created', 'date_modified') and \
                 isinstance(page[key], str) and page[key]:
             page[key] = datetime.fromisoformat(page[key])
-        if key == 'entered_date' and page[key]:
+        if key == 'entered_date' and isinstance(page[key], str) and page[key]:
             page[key] = date.fromisoformat(page[key])
     if 'username' not in page.keys():
         if 'taxonomy' in page.keys() and 'author' in page['taxonomy']:
