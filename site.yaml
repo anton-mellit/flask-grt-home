@@ -1,0 +1,209 @@
+site:
+    title: GRT at home
+    description: GRT at home is a solution for sharing links to online seminars in geometric representation theory and related fields
+    menu:
+    -
+        title: News
+        endpoints:
+        - news
+        - index
+        - news_item
+    -
+        title: Events
+        endpoints:
+        - events
+        - events_item
+        - edit_event
+    -
+        title: Library
+        endpoints:
+        - library
+        - library_item
+        - edit_library
+    -
+        title: About
+        endpoints:
+        - about
+
+    news:
+        dateformat: "%-d %b %Y"
+    digest:
+        dateformat: "%A, %B %-d, %H:%M"
+        dateformat2: "%H:%M"
+    hero: "# **Geometric Representation Theory** at home"
+    folders:
+        playgrounds:
+            folder: data/playgrounds
+            filename: index.md
+            routes: []
+            template: /playgrounds/item.html
+        tmp:
+            folder: data/tmp
+            filename: index.md
+            routes: []
+        news:
+            folder: data/news
+            filename: item.md
+            routes:
+                - /news
+            template: /news/item.html
+        events:
+            folder: data/events
+            filename: myevent.md
+            caching:
+                fields:
+                    - date
+                    - talk_title
+                    - talk_speaker
+                    - seminar
+            routes:
+                - /event
+                - /online-seminars
+            template: /events/item.html
+        library:
+            folder: data/library
+            filename: index.md
+            caching:
+                fields:
+                    - date
+                    - talk_title
+                    - talk_speaker
+                    - talk_location
+                    - entered_date
+                    - username
+            routes:
+                - /library
+            template: /library/item.html
+    collections:
+        news:
+            folder: news
+            desc: True
+            pagination: 6
+        future_events:
+            folder: events
+            begin_date:
+                hours: -1
+            pagination: 10
+            cached: True
+        past_events:
+            folder: events
+            end_date:
+                hours: 0
+            desc: True
+            pagination: 10
+            cached: True
+        sidebar_events:
+            folder: events
+            begin_date:
+                hours: -1
+            first_n: 5
+            cached: True
+        calendar:
+            folder: events
+            begin_date:
+                days: -30
+        digest_events:
+            folder: events
+            begin_date:
+                days: 0
+            end_date:
+                days: 7
+        digest_news:
+            folder: news
+            desc: True
+            begin_date:
+                days: -7
+            end_date:
+                days: 0
+        library:
+            folder: library
+            desc: True
+            pagination: 10
+            cached: True
+    layouts:
+        edit_event:
+        - seminar
+        -
+            columns:
+            -
+                width: 3
+                field: entered_date
+            -
+                width: 3
+                field: entered_time
+            -
+                width: 3
+                field: entered_timezone
+            -
+                width: 3
+                field: duration
+        - talk_speaker
+        - talk_title
+        -
+            columns:
+            -
+                width: 6
+                field: online_access
+            -
+                width: 6
+                field: online_secret
+        - content
+        - allow_comments
+        - attachments
+        - submit
+        edit_news:
+        - post_title
+        - content
+        - allow_comments
+        - attachments
+        - submit
+        edit_library:
+            -
+                columns:
+                    -
+                        width: 6
+                        field: talk_speaker
+                    -
+                        width: 6
+                        field: speaker_affiliation
+            - talk_title
+            -
+                columns:
+                    -
+                        width: 3
+                        field: entered_date
+                    -
+                        width: 9
+                        field: talk_location
+            - video
+            - content
+            - allow_comments
+            - attachments
+            - submit
+
+
+search:
+    index: data/search
+    pagination: 10
+    collections:
+        news:
+          folder: news
+          endpoint: news_item
+        events:
+          folder: events
+          endpoint: events_item
+        library:
+          folder: library
+          endpoint: library_item
+
+timezone: Europe/Vienna
+username_regexp: ^[a-z0-9_.-]{3,}
+password_regexp: (?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}
+foldername_regexp: ^[a-z0-9_-]{1,}
+agree_terms_label: >
+    Click here if you agree to the following terms:
+    We will store your email address for the purpose of activation of your
+    account and for sending the weekly digest if you choose to subscribe. We
+    will store your full name so that we make it visible next to your posts and
+    comments. Much of the information here is directly provided by the users.
+    We do not take any responsibility for its accuracy.

@@ -15,6 +15,10 @@ with (BASE_PATH / 'config.yaml').open() as f:
     for key, value in config['flask'].items():
         app.config[key] = value
 
+with (BASE_PATH / 'site.yaml').open() as f:
+    site = yaml.safe_load(f)
+    config.update(site)
+
 @app.context_processor
 def inject_site():
     return { 'site': config['site'] }
