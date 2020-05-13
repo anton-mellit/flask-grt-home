@@ -32,7 +32,10 @@ def time_representer(dumper, data):
     value = data.isoformat()
     return dumper.represent_str(value)
 
-yaml.CSafeDumper.add_representer(datetime.time, time_representer)
+try:
+    yaml.CSafeDumper.add_representer(datetime.time, time_representer)
+except  AttributeError:
+    pass
 yaml.SafeDumper.add_representer(datetime.time, time_representer)
 yaml.Dumper.add_representer(datetime.time, time_representer)
 
