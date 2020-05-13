@@ -17,7 +17,9 @@
     <p><em>{{ item.talk_title }}</em></p>
     {% endif %}
 
-    <p><time class="date-time-long" datetime="{{ item.date.isoformat() }}"></time></p>
+    <p><time class="date-time-long" datetime="{{ item.date.isoformat() }}"></time>
+    <small class='organizers-time'>Organizer's time: {{item.entered_date.isoformat()}}
+    {{item.entered_time.strftime('%H:%M')}} {{item.entered_timezone}}</small></p>
 
     {% if item.duration and item.duration != "unknown" %}
     {% set conversion={ '15': '15 minutes',

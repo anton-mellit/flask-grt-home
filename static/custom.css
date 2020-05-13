@@ -228,3 +228,8 @@ pre code{
 .playground-chunk-container.loading {
     color: #3b435140!important;
 }
+
+.organizers-time {
+    margin-left: 1rem;
+    font-size: .6rem;
+}
