@@ -1,6 +1,6 @@
 from run import app, config
 
-from pages import EditPageForm, EditAttachmentsMixin
+from pages import EditPageForm, EditAttachmentsMixin, DateField
 
 from flask_login import login_required
 
@@ -19,7 +19,7 @@ class NewLibraryForm(EditAttachmentsMixin):
     speaker_affiliation = StringField('Affiliation')
     talk_title = StringField('Title', validators=[DataRequired()])
     talk_location = StringField('Location')
-    entered_date = StringField('Date', render_kw={'type':'date'})
+    entered_date = DateField('Date')
     video = StringField('Video')
     content = TextAreaField('Abstract and other information')
     allow_comments = BooleanField('Allow registered users to leave comments?', default=True)
@@ -31,8 +31,6 @@ class NewLibraryForm(EditAttachmentsMixin):
     def populate_page(self, page, is_new):
         super().populate_page(page, is_new)
         page['date'] = page['date_created']
-        if page.get('entered_date'):
-            page['entered_date'] = datetime.date.fromisoformat(page['entered_date'])
 
 class EditLibraryForm(NewLibraryForm):
     title = 'Edit library card'

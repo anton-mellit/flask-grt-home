@@ -4,12 +4,12 @@ from wtforms import StringField, BooleanField, \
         SubmitField, SelectField, TextAreaField, \
         MultipleFileField
 from wtforms.validators import DataRequired, Regexp
-from wtforms.fields.html5 import DateField, TimeField
 
 from flask_login import login_required
 
 from users import timezone_widget, timezone_choices
-from pages import EditPageForm, EditAttachmentsMixin
+from pages import EditPageForm, EditAttachmentsMixin, DateField, \
+    TimeField
 
 from datetime import datetime, timezone
 from dateutil import tz
@@ -30,15 +30,14 @@ duration_choices = list({ 'unknown': 'unknown',
                 '360': '6 hours',
 }.items())
 
-
 class EventForm(EditPageForm):
     title = 'New event'
     slug_field = 'seminar'
     outer_class = 'large-form-container'
     layout = config['site']['layouts']['edit_event']
     seminar = StringField('Seminar, institution', validators=[DataRequired()])
-    entered_date = StringField('Date', validators=[DataRequired()], render_kw={'type':'date'})
-    entered_time = StringField('Time', validators=[DataRequired()], render_kw={'type':'time'})
+    entered_date = DateField('Date', validators=[DataRequired()])
+    entered_time = TimeField('Time', validators=[DataRequired()])
     entered_timezone = SelectField('Timezone', validators=[DataRequired()], \
             widget=timezone_widget, choices=timezone_choices)
     duration = SelectField('Duration', choices=duration_choices)
@@ -56,9 +55,9 @@ class EventForm(EditPageForm):
     def populate_page(self, page, is_new):
         super().populate_page(page, is_new)
         timezone = tz.gettz(self.entered_timezone.data)
-        page['date'] = datetime.strptime('%s %s' % \
-                (self.entered_date.data, self.entered_time.data),
-                '%Y-%m-%d %H:%M').replace(tzinfo=timezone)
+        page['date'] = datetime.combine(self.entered_date.data, \
+            self.entered_time.data).replace(tzinfo=timezone)
+        page['entered_time'] = str(page['entered_time'])
 
 class EventFormAttachments(EventForm, EditAttachmentsMixin):
     title = 'Edit event'

@@ -1,12 +1,15 @@
 
 {% set field2class = {'StringField': 'form-input',
+                    'DateField': 'form-input',
+                    'TimeField': 'form-input',
                     'PasswordField': 'form-input',
                     'SelectField': 'form-select',
                     'TextAreaField': 'form-input md-editor',
                     'SubmitField': 'btn btn-primary'} %}
 
 {% set field_with_label = ['StringField', 'PasswordField',
-            'SelectField', 'TextAreaField'] %}
+            'SelectField', 'TextAreaField', 'DateField',
+            'TimeField'] %}
 
 
 {% macro dropzone(field) %}

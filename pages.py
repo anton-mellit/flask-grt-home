@@ -4,11 +4,13 @@ from flask import render_template, send_file, abort, request, flash, redirect, \
 from users import load_user, flash_errors
 from flask_wtf import FlaskForm
 from wtforms import StringField
+from wtforms.fields.html5 import DateField as wtDateField,\
+    TimeField as  wtTimeField
 from flask_login import current_user
 from werkzeug.utils import secure_filename as w_secure_filename
 
 import frontmatter
-from datetime import date, datetime, timedelta, timezone
+import datetime
 import re
 import itertools
 import json
@@ -25,15 +27,27 @@ def secure_filename(s):
         s = 'x'
     return s
 
+import yaml
+def time_representer(dumper, data):
+    value = data.isoformat()
+    return dumper.represent_str(value)
+
+yaml.CSafeDumper.add_representer(datetime.time, time_representer)
+yaml.SafeDumper.add_representer(datetime.time, time_representer)
+yaml.Dumper.add_representer(datetime.time, time_representer)
+
+
 def load_page(path):
     with path.open() as f:
         page = frontmatter.load(f).to_dict()
     for key in list(page.keys()):
         if key in ('date', 'date_created', 'date_modified') and \
                 isinstance(page[key], str) and page[key]:
-            page[key] = datetime.fromisoformat(page[key])
+            page[key] = datetime.datetime.fromisoformat(page[key])
         if key == 'entered_date' and isinstance(page[key], str) and page[key]:
-            page[key] = date.fromisoformat(page[key])
+            page[key] = datetime.date.fromisoformat(page[key])
+        if key == 'entered_time' and isinstance(page[key], str) and page[key]:
+            page[key] = datetime.time.fromisoformat(page[key])
     if 'username' not in page.keys():
         if 'taxonomy' in page.keys() and 'author' in page['taxonomy']:
             page['username'] = page['taxonomy']['author'][0]
@@ -155,12 +169,12 @@ class PageFolder:
 
 
 def datetime_now():
-    return datetime.now(timezone.utc)
+    return datetime.datetime.now(datetime.timezone.utc)
 
 def handle_timedelta(dt):
     if dt and isinstance(dt, dict):
-        dt = timedelta(**dt)
-        dt = datetime.now(timezone.utc) + dt
+        dt = datetime.timedelta(**dt)
+        dt = datetime_now() + dt
     return dt
 
 @app.template_filter()
@@ -315,6 +329,15 @@ class EditPageForm(FlaskForm):
         flash_errors(self)
         return self.render()
 
+class TimeField(wtTimeField):
+    def __init__(self, label, **kwargs):
+        kwargs['render_kw'] = {'placeholder': 'hh:mm'}
+        super().__init__(label, **kwargs)
+
+class DateField(wtDateField):
+    def __init__(self, label, **kwargs):
+        kwargs['render_kw'] = {'placeholder': 'yyyy-mm-dd'}
+        super().__init__(label, **kwargs)
 
 class DropzoneField(StringField):
     def __init__(self, title, options={}, **kw):
