@@ -10,12 +10,14 @@ Flask-Bcrypt==0.7.1
 Flask-Login==0.5.0
 Flask-Mail==0.9.1
 Flask-Markdown==0.3
+flask-redis==0.4.0
 Flask-WTF==0.14.3
 html2text==2020.1.16
 idna==2.9
 itsdangerous==1.1.0
 Jinja2==2.11.2
 Markdown==3.2.1
+markdown-urlize==0.2.0
 MarkupSafe==1.1.1
 mod-wsgi==4.7.1
 packaging==20.3
@@ -26,6 +28,7 @@ python-frontmatter==0.5.0
 python-markdown-math==0.6
 pytz==2020.1
 PyYAML==5.3.1
+redis==3.5.0
 six==1.14.0
 webencodings==0.5.1
 Werkzeug==1.0.1
