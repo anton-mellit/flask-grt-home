@@ -197,9 +197,9 @@ search:
           endpoint: library_item
 
 timezone: Europe/Vienna
-username_regexp: ^[a-z0-9_.-]{3,}
-password_regexp: (?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}
-foldername_regexp: ^[a-z0-9_-]{1,}
+username_regexp: ^[a-z0-9_.-]{3,}$
+password_regexp: (?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$
+foldername_regexp: ^[a-z0-9_-]{1,}$
 agree_terms_label: >
     Click here if you agree to the following terms:
     We will store your email address for the purpose of activation of your

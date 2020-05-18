@@ -1,0 +1,19 @@
+email:
+  default_sender:
+    - Admin
+    - admin@localhost.localdomain
+  default_recipient:
+    - Admin
+    - admin@localhost.localdomain
+
+flask:
+  ENV: development
+  SECRET_KEY: !!binary |
+    e9QDeEzdY1moaD43GSq/N/STVCTnmxCAphElJBXxKASoMRmunayWCuumZ0hVWB4gSPPm80SWDgVu
+    A1VbaSbqIw==
+  RECAPTCHA_PRIVATE_KEY: 6Lef1e0UAAAAAOlGx-IsyHET07rjuhpoxCtbkPyv
+  RECAPTCHA_PUBLIC_KEY: 6Lef1e0UAAAAAPBLBWQ7Qyp4CEKLq85ORzJSmbSk
+  SERVER_NAME: 127.0.0.1:5000
+  SESSION_TYPE: redis
+  REDIS_URL: redis://localhost:6379/0
+  #  TESTING: true
