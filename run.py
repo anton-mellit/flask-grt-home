@@ -121,12 +121,12 @@ def favicon():
     return redirect(url_for('static', filename='favicon.ico'))
 
 @app.route('/calendar')
+@app.route('/calendar.ics')
 def calendar():
     response = make_response(render_template('calendar.ics'))
-    response.headers['Content-Type'] = 'text/calendar; charset=utf=8'
+    response.headers['Content-Type'] = 'text/calendar; charset="utf-8"'
     response.headers['Content-Disposition'] = 'attachment; filename=calendar.ics'
     return response
-
 
 from html2text import HTML2Text
 text_maker = HTML2Text()
