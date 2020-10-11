@@ -9,10 +9,10 @@ email:
 flask:
   ENV: development
   SECRET_KEY: !!binary |
-    e9QDeEzdY1moaD43GSq/N/STVCTnmxCAphElJBXxKASoMRmunayWCuumZ0hVWB4gSPPm80SWDgVu
-    A1VbaSbqIw==
-  RECAPTCHA_PRIVATE_KEY: 6Lef1e0UAAAAAOlGx-IsyHET07rjuhpoxCtbkPyv
-  RECAPTCHA_PUBLIC_KEY: 6Lef1e0UAAAAAPBLBWQ7Qyp4CEKLq85ORzJSmbSk
+  1XmLnGO8Hrt84UbmKcPdsXd/XhVKTxy1c1gU291hdyKG8xaJK/I/uGowSMzDrf9pqep88PXUm8VM
+  AmvfhyCzzg==
+  RECAPTCHA_PRIVATE_KEY: "put your private key from recaptcha here"
+  RECAPTCHA_PUBLIC_KEY: "put your public key from recaptcha here"
   SERVER_NAME: 127.0.0.1:5000
   SESSION_TYPE: redis
   REDIS_URL: redis://localhost:6379/0
