@@ -30,7 +30,7 @@ site:
     digest:
         dateformat: "%A, %B %-d, %H:%M"
         dateformat2: "%H:%M"
-    hero: "# **Geometric Representation Theory** at home"
+    hero: "# **Geometry and Representation Theory** at home"
     folders:
         playgrounds:
             folder: data/playgrounds
