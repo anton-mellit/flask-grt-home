@@ -1,1 +1,1 @@
-pip freeze > requirements.sh
+pip3 freeze > requirements.txt
