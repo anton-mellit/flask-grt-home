@@ -19,7 +19,7 @@ Jinja2==2.11.2
 Markdown==3.2.1
 markdown-urlize==0.2.0
 MarkupSafe==1.1.1
-mod-wsgi==4.7.1
+mod-wsgi==4.9.3
 packaging==20.3
 pycparser==2.20
 pyparsing==2.4.7
